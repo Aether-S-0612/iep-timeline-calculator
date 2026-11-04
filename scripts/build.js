@@ -5,7 +5,13 @@ const path = require("path");
 const ROOT = path.join(__dirname, "..");
 const OUT = path.join(ROOT, "public");
 // Paid letter. live=false hides it unless the URL has ?preview. checkoutUrl is the payment link.
-const PAYWALL = { live: true, price: "$12", checkoutUrl: process.env.CHECKOUT_URL || "" };
+// checkoutLive=false: the buy button only works with ?preview in the URL (store is still in test mode).
+const PAYWALL = {
+  live: true,
+  checkoutLive: false,
+  price: "$12",
+  checkoutUrl: process.env.CHECKOUT_URL || "https://iepdeadlines.lemonsqueezy.com/checkout/buy/5521c769-2346-4182-a823-802108757d06",
+};
 const SITE = (process.env.SITE_URL || "https://www.iepdeadlines.com").replace(/\/$/, "");
 const SITE_NAME = "IEP Timeline Calculator";
 const STATES = require(path.join(ROOT, "src", "states.js"));

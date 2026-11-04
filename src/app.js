@@ -149,7 +149,7 @@
       document.querySelector(".letter-fake").innerHTML = "<p>" + FAKE.repeat(2) + "</p><p>" + FAKE + "</p>";
       document.querySelectorAll("#letter .price").forEach((n) => (n.textContent = pay.price || ""));
       const buy = $("buy");
-      if (pay.checkoutUrl) buy.href = pay.checkoutUrl;
+      if (pay.checkoutUrl && (pay.checkoutLive || params.has("preview"))) { buy.href = pay.checkoutUrl; buy.classList.remove("disabled"); }
       else { buy.removeAttribute("href"); buy.classList.add("disabled"); buy.textContent = "Coming soon"; }
     } else {
       const text = IEPLetter.toText(L);
