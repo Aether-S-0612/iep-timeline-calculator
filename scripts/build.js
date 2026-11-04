@@ -101,7 +101,7 @@ function statePage(code, s) {
 
 <section id="results" class="card" hidden aria-live="polite">
   <h2 style="margin-top:0">Here's your timeline</h2>
-  <p class="lead">These are the latest dates the rules allow. The school can, and often should, move sooner.</p>
+  <p class="lead">These are the latest dates the rules allow. The school can, and often should, move sooner. School-day counts use a typical US school calendar unless you enter your own under "Adjust the school calendar", so they may be off by a few school days.</p>
   <ol id="result-rows" class="timeline"></ol>
   <div class="actions">
     <button type="button" id="ics">Add these dates to my calendar</button>
