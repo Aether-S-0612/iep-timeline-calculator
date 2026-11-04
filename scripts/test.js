@@ -23,6 +23,11 @@ const cal = C.makeCal({ years: [{ first: "2026-09-01", last: "2027-06-30" }], cl
 eq(C.addSchoolDays(cal, "2026-11-23", 1), "2026-11-24", "school day +1");
 eq(C.addSchoolDays(cal, "2026-11-23", 3), "2026-11-30", "school day skips holiday+weekend");
 
+// PA: consent received in summer (before the first day) -> clock starts on the first day.
+// Pittsburgh 2026-27 starts Mon 2026-08-24: day 1 = 08-24, day 60 = 10-22.
+const rPA = run("PA", "2026-08-01", { years: [{ first: "2026-08-24", last: "2027-06-08" }, { first: "2027-08-25", last: "2028-06-07" }] });
+eq(rPA.eval, "2026-10-22", "PA summer consent starts at first day");
+
 // NY: 2026-11-03 + 60 calendar days = 2027-01-02
 let r = run("NY", "2026-11-03");
 eq(r.eval, "2027-01-02", "NY eval 60 calendar days");

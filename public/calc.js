@@ -85,6 +85,11 @@
     return d;
   }
   function isSummer(cal, s) {
+    // Before the first entered year: assume last spring ended on the same date a year earlier.
+    if (cal.years.length && s < cal.years[0].first) {
+      const prevLast = String(+cal.years[0].last.slice(0, 4) - 1) + cal.years[0].last.slice(4);
+      if (s > prevLast) return true;
+    }
     for (let i = 0; i < cal.years.length - 1; i++) {
       if (s > cal.years[i].last && s < cal.years[i + 1].first) return true;
     }
