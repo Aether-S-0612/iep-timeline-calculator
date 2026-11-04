@@ -39,6 +39,7 @@ ${body}
 </main>
 <footer><div class="wrap">
 Estimates only, not legal advice. Deadlines depend on your district's calendar and on facts this tool cannot see. Always confirm with your school district or state education agency. <a href="/about/">Sources and method</a>.
+<br><a href="/terms/">Terms</a> &middot; <a href="/privacy/">Privacy</a> &middot; <a href="/refunds/">Refunds</a>
 </div></footer>
 </body>
 </html>
@@ -198,6 +199,56 @@ function aboutPage() {
   });
 }
 
+// Contact address shown on the legal pages. Empty = point buyers to their receipt email.
+const CONTACT_EMAIL = process.env.CONTACT_EMAIL || "";
+const UPDATED = "November 4, 2026";
+function contactLine() {
+  return CONTACT_EMAIL
+    ? `Email <a href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a>.`
+    : "Reply to the receipt email you received when you bought, and the message will reach us.";
+}
+
+function legalPage(slug, title, description, inner) {
+  return layout({ title: title + " – " + SITE_NAME, description, canonical: "/" + slug + "/", body: `<h1>${title}</h1>\n<p class="small">Last updated ${UPDATED}</p>\n${inner}` });
+}
+
+function termsPage() {
+  return legalPage("terms", "Terms of Service", "Terms for using the free IEP Timeline Calculator and buying its printable templates.", `
+<h2>The free calculator</h2>
+<p>The calculator is free to use. It gives estimates based on published regulations and the school calendar you enter. It is general information, not legal advice, and using it does not create an attorney-client or advocate relationship. Always confirm deadlines with your school district, your state education agency, or a qualified advocate.</p>
+<h2>Paid products</h2>
+<p>Paid products are digital downloads, such as printable letter templates and checklists. Orders are processed by our online reseller, Lemon Squeezy, which is the merchant of record and handles payment, sales tax and receipts. Their <a href="https://www.lemonsqueezy.com/buyer-terms">buyer terms</a> also apply to your purchase.</p>
+<p>After purchase you may use the templates for yourself and your own family. Please do not resell or redistribute them.</p>
+<h2>No guarantee of outcome</h2>
+<p>Templates help you communicate clearly with your school. We cannot promise any particular response or result from a school or agency.</p>
+<h2>Changes</h2>
+<p>We may update the calculator, products and these terms. The date at the top shows the latest version.</p>
+<h2>Contact</h2>
+<p>${contactLine()}</p>`);
+}
+
+function privacyPage() {
+  return legalPage("privacy", "Privacy Policy", "What the IEP Timeline Calculator collects (almost nothing) and how purchases are handled.", `
+<h2>The calculator</h2>
+<p>Everything you type into the calculator, including dates and school calendars, is processed in your own browser. It is not sent to or stored on our servers.</p>
+<h2>Hosting and fonts</h2>
+<p>The site is hosted on Vercel, which keeps standard server logs (such as IP address and pages requested) for security and operations. Fonts are loaded from Google Fonts, which receives your IP address when the page loads.</p>
+<h2>Purchases</h2>
+<p>If you buy a product, Lemon Squeezy collects your name, email and payment details to process the order and send your download. We receive your name, email and order details so we can provide support and refunds. We do not receive your full card number. See the <a href="https://www.lemonsqueezy.com/privacy">Lemon Squeezy privacy policy</a>.</p>
+<h2>What we do not do</h2>
+<p>We do not sell personal information, and we do not ask for information about your child's disability or records.</p>
+<h2>Your choices</h2>
+<p>You can ask us to delete the order information we hold about you. ${contactLine()}</p>`);
+}
+
+function refundsPage() {
+  return legalPage("refunds", "Refund Policy", "Refund policy for printable templates sold on the IEP Timeline Calculator.", `
+<p>If a template is not useful to you, ask for a refund within 14 days of purchase and you will get your money back in full. No explanation is needed.</p>
+<p>Refunds go back to your original payment method through Lemon Squeezy. Depending on your bank, they usually appear within 5 to 10 business days.</p>
+<h2>How to ask</h2>
+<p>${contactLine()} Include the email address you used to buy.</p>`);
+}
+
 function write(rel, content) {
   const p = path.join(OUT, rel);
   fs.mkdirSync(path.dirname(p), { recursive: true });
@@ -207,11 +258,14 @@ function write(rel, content) {
 fs.rmSync(OUT, { recursive: true, force: true });
 write("index.html", homePage());
 write("about/index.html", aboutPage());
+write("terms/index.html", termsPage());
+write("privacy/index.html", privacyPage());
+write("refunds/index.html", refundsPage());
 for (const [code, s] of Object.entries(STATES)) write(`${s.slug}/index.html`, statePage(code, s));
 for (const f of ["calc.js", "app.js", "style.css"]) fs.copyFileSync(path.join(ROOT, "src", f), path.join(OUT, f));
 for (const f of fs.readdirSync(path.join(ROOT, "static"))) fs.copyFileSync(path.join(ROOT, "static", f), path.join(OUT, f));
 
-const urls = ["/", "/about/", ...Object.values(STATES).map((s) => `/${s.slug}/`)];
+const urls = ["/", "/about/", "/terms/", "/privacy/", "/refunds/", ...Object.values(STATES).map((s) => `/${s.slug}/`)];
 const today = new Date().toISOString().slice(0, 10);
 write(
   "sitemap.xml",
