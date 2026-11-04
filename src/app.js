@@ -165,6 +165,13 @@
       const text = IEPLetter.toText(L);
       $("send-gmail").href = "https://mail.google.com/mail/?view=cm&fs=1&su=" + encodeURIComponent(L.subject) + "&body=" + encodeURIComponent(text);
       $("send-mail").href = "mailto:?subject=" + encodeURIComponent(L.subject) + "&body=" + encodeURIComponent(text);
+      // Gmail's web compose link doesn't open a draft on phones; there, the mail app (mailto) is the main button.
+      const mobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || (navigator.maxTouchPoints > 1 && /Mac/.test(navigator.platform));
+      if (mobile) {
+        $("send-gmail").hidden = true;
+        $("send-mail").classList.remove("ghost");
+        $("send-mail").textContent = "Open in my email app";
+      }
       $("copy-letter").onclick = () => {
         navigator.clipboard && navigator.clipboard.writeText("Subject: " + L.subject + "\n\n" + text).then(() => {
           $("copy-letter").textContent = "Copied";
