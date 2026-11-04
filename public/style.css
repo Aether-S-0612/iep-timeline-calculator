@@ -9,6 +9,7 @@
   --warm: #e07a5f;
   --warm-soft: #fdeee8;
   --hero: linear-gradient(135deg, #fdeee8 0%, #f6efe2 55%, #e8f3ef 100%);
+  color-scheme: light;
 }
 @media (prefers-color-scheme: dark) {
   :root {
@@ -22,6 +23,7 @@
     --warm: #f0a088;
     --warm-soft: #3a2a24;
     --hero: linear-gradient(135deg, #3a2a24 0%, #2a2620 55%, #233430 100%);
+    color-scheme: dark;
   }
 }
 * { box-sizing: border-box; }
@@ -53,6 +55,8 @@ input[type="date"], input[type="text"], textarea {
   width: 100%; padding: 12px; border: 1.5px solid var(--line); border-radius: 12px;
   background: var(--bg); color: var(--text); font: inherit;
 }
+input[type="date"] { cursor: pointer; }
+input[type="date"]::-webkit-calendar-picker-indicator { cursor: pointer; opacity: 0.85; width: 22px; height: 22px; }
 input[type="date"]:focus, input[type="text"]:focus, textarea:focus { outline: none; border-color: var(--accent); }
 textarea { min-height: 220px; font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 13px; }
 .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0 12px; }
