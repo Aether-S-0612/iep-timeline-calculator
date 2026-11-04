@@ -4,7 +4,7 @@ const path = require("path");
 
 const ROOT = path.join(__dirname, "..");
 const OUT = path.join(ROOT, "public");
-const SITE = (process.env.SITE_URL || "https://iepdeadlines.com").replace(/\/$/, "");
+const SITE = (process.env.SITE_URL || "https://www.iepdeadlines.com").replace(/\/$/, "");
 const SITE_NAME = "IEP Timeline Calculator";
 const STATES = require(path.join(ROOT, "src", "states.js"));
 
