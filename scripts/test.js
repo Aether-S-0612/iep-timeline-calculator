@@ -74,4 +74,22 @@ eq(L.kind, "confirm", "IL letter confirm before deadline");
 eq(/February 18, 2027/.test(L.paragraphs[2]), true, "IL letter confirms 60 school day date");
 eq(/;/.test(letter("PA", "2026-08-01", "2026-11-04").paragraphs[2]), false, "PA letter uses one cite per step");
 
+// Escalation and recap letters
+function rowsFor(code, consent) { const s = S[code]; return C.compute(code, { consent, years: s.years, closures: s.closures }); }
+let E = Lt.buildLetter("NY", rowsFor("NY", "2026-11-03"), "2026-11-03", "2027-01-20", { child: "Maya", mode: "escalate", firstSent: "2027-01-05" });
+eq(E.kind, "escalate", "escalate kind");
+eq(/^Dear Superintendent,/.test(E.paragraphs[0]), true, "escalate defaults to superintendent");
+eq(/January 5, 2027/.test(E.paragraphs[2]) && /18 days after the deadline/.test(E.paragraphs[2]), true, "escalate cites first email and days late");
+eq(/NYSED/.test(E.paragraphs[4]) && /300\.153/.test(E.paragraphs[4]), true, "escalate names state agency and rule");
+E = Lt.buildLetter("IL", rowsFor("IL", "2026-11-03"), "2026-11-03", "2026-11-20", { mode: "escalate" });
+eq(/must be completed by February 18, 2027/.test(E.paragraphs[2]), true, "escalate before deadline asks to confirm");
+eq(/\[date of your first email\]/.test(E.paragraphs[2]), true, "escalate placeholder when no first date");
+const R = Lt.buildLetter("PA", [], "2026-11-03", "2026-12-01", { child: "Maya", mode: "recap", meetingDate: "2026-12-01" });
+eq(R.kind, "recap", "recap kind");
+eq(/December 1, 2026/.test(R.paragraphs[1]), true, "recap meeting date");
+eq(/December 8, 2026/.test(R.paragraphs[5]), true, "recap reply-by one week later");
+const P = Lt.buildPrepPack("IL", "Maya").map((x) => x.title);
+eq(P.includes("The night before") && P.includes("Words that help when you feel rushed") && P.includes("If the school stops answering"), true, "prep pack sections");
+eq(Lt.buildGlossary("PA").some(([w]) => w === "NOREP"), true, "PA glossary has NOREP");
+
 console.log("All", n, "checks passed");

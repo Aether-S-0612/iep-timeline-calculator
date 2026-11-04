@@ -102,6 +102,7 @@ function statePage(code, s) {
 
 <section id="results" class="card" hidden aria-live="polite">
   <h2 style="margin-top:0">Here's your timeline</h2>
+  <div id="progress" class="progress"></div>
   <p class="lead">These are the latest dates the rules allow. The school can, and often should, move sooner. School-day counts use a typical US school calendar unless you enter your own under "Adjust the school calendar", so they may be off by a few school days.</p>
   <ol id="result-rows" class="timeline"></ol>
   <div class="actions">
@@ -123,6 +124,15 @@ function statePage(code, s) {
   </div>
   <label for="l-to">Send to (email) <span class="hint">optional. Usually the district's Director of Special Education (sometimes called Director of Pupil Services). You can find it on your district's website or ask the school office. Add the principal too, separated by a comma.</span></label>
   <input type="email" id="l-to" maxlength="200" multiple placeholder="name@district.org">
+  <fieldset class="letter-modes">
+    <legend>Which letter do you need?</legend>
+    <label><input type="radio" name="l-mode" id="l-mode-auto" value="auto" checked> <span id="l-mode-auto-label">Confirm the dates</span></label>
+    <label><input type="radio" name="l-mode" id="l-mode-escalate" value="escalate"> No reply yet <span class="hint">goes to the superintendent</span></label>
+    <label><input type="radio" name="l-mode" id="l-mode-recap" value="recap"> After the IEP meeting</label>
+  </fieldset>
+  <div id="l-escalate-fields" hidden><label for="l-first-sent">When did you send your first email? <span class="hint">optional. This letter goes one level up: put the superintendent's name in "Addressed to" and their email in "Send to". You can find both on the district website.</span></label><input type="date" id="l-first-sent"></div>
+  <div id="l-recap-fields" hidden><label for="l-meeting">Meeting date <span class="hint">optional</span></label><input type="date" id="l-meeting"></div>
+  <p class="why-polite" id="why-polite"></p>
   <div class="letter-box">
     <div class="letter-subject"><span>Subject:</span> <strong id="letter-subject"></strong></div>
     <div id="letter-free"></div>
@@ -132,9 +142,10 @@ function statePage(code, s) {
       <div class="lock-card">
         <p class="lock-title">Unlock the full letter</p>
         <ul>
-          <li>The rest of your letter, with what to ask for and by when</li>
-          <li>Send it from your own email in one click, so you keep the record</li>
-          <li>IEP meeting prep: a checklist and questions to ask</li>
+          <li>4 letters for every stage: confirm the dates, a date has passed, no reply yet, and after the meeting</li>
+          <li>Send them from your own email in one click, so you keep the record</li>
+          <li>IEP meeting prep: what to bring, questions to ask, and calm words for when you feel rushed</li>
+          <li>Plain-English glossary, and what to do if the school stops answering</li>
         </ul>
         <a class="button" id="buy" href="#">Unlock for <span class="price"></span></a>
         <p class="small">One-time payment. 14-day money-back guarantee.</p>
@@ -167,6 +178,10 @@ function statePage(code, s) {
     <li><strong>If a date passes,</strong> send a short, polite email noting the deadline and asking when it will happen.</li>
     <li><strong>You don't have to do this alone.</strong> Every state has a free Parent Training and Information Center. <a href="https://www.parentcenterhub.org/find-your-center/" target="_blank" rel="noopener">Find yours</a>.</li>
   </ul>
+  <div class="not-alone">
+    <p><strong>Feeling tired, worried or frustrated?</strong> That's very common. Many parents feel exactly this way while they wait. Asking for these dates isn't making trouble. It's how the process is meant to work, and it's part of looking after your child.</p>
+    <p>If you'd like to talk with a parent who has been through it, <a href="https://www.p2pusa.org/" target="_blank" rel="noopener">Parent to Parent USA</a> can connect you with a trained volunteer parent near you.</p>
+  </div>
   <p class="small">Case manager or school psychologist? The same dates work for your caseload. Add each student's timeline to your calendar.</p>
 </section>
 

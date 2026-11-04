@@ -102,7 +102,7 @@ a.button.disabled { opacity: 0.55; cursor: default; }
 .prep-title { font-size: 20px; margin: 12px 0 4px; }
 #prep-pack h4 { margin: 16px 0 6px; font-size: 16px; color: var(--accent); }
 #prep-pack ul { padding-left: 20px; margin: 0; }
-#prep-pack li { margin-bottom: 6px; }
+#prep-pack li { margin-bottom: 6px; overflow-wrap: anywhere; }
 .have-key { border: none; margin-top: 10px; padding: 0; }
 .have-key summary { font-size: 14px; font-weight: 600; }
 .key-form input { margin: 8px 0; }
@@ -127,3 +127,28 @@ footer { color: var(--muted); font-size: 14px; border-top: 1px solid var(--line)
   body.print-prep #letter { display: block !important; border: none; box-shadow: none; }
   body.print-prep #letter > *:not(#prep-pack), body.print-prep #print-prep { display: none !important; }
 }
+
+/* Progress map */
+.progress { margin: 6px 0 14px; background: var(--bg); border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; }
+.progress .p-head { margin: 0 0 10px; font-weight: 700; }
+.progress ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.progress li { display: grid; grid-template-columns: 18px 1fr; column-gap: 8px; align-items: center; color: var(--muted); }
+.progress .dot { width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--line); background: var(--card); }
+.progress .p-note { grid-column: 2; font-size: 14px; }
+.progress li.done { color: var(--text); }
+.progress li.done .dot { background: var(--accent); border-color: var(--accent); }
+.progress li.here { color: var(--text); font-weight: 700; }
+.progress li.here .dot { border-color: var(--warm); background: var(--warm); box-shadow: 0 0 0 4px color-mix(in srgb, var(--warm) 25%, transparent); }
+.progress li.here .p-note { color: var(--warm); font-weight: 700; }
+.progress li.late .p-note { color: var(--warm); }
+/* Letter picker */
+.letter-modes { border: 1px solid var(--line); border-radius: 12px; padding: 10px 14px 6px; margin: 16px 0 0; }
+.letter-modes legend { font-weight: 700; padding: 0 6px; }
+.letter-modes label { display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; font-weight: 400; margin: 4px 0 8px; cursor: pointer; }
+.letter-modes input { width: auto; margin: 0; }
+.why-polite { margin: 14px 0 0; font-size: 15px; color: var(--muted); border-left: 3px solid var(--accent); padding-left: 10px; }
+.not-alone { margin-top: 14px; padding-top: 12px; border-top: 1px dashed var(--line); }
+.not-alone p { margin: 0 0 8px; }
+.glossary { margin: 0; }
+.glossary dt { font-weight: 700; margin-top: 8px; }
+.glossary dd { margin: 2px 0 0; }

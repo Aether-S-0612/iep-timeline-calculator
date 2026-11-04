@@ -118,8 +118,30 @@
         );
       })
       .join("");
+    renderProgress(t);
     out.hidden = false;
     renderLetter(input, t);
+  }
+
+  // "Where am I?" map: consent is done; the first step whose date hasn't come yet is "you are here".
+  const SHORT = { eval: "Evaluation", iep: "IEP meeting", impl: "Services start" };
+  function renderProgress(t) {
+    const steps = lastRows.filter((r) => SHORT[r.key] || (r.key === "iep" && r.date));
+    const named = steps.map((r) => ({ name: SHORT[r.key] || r.label, date: r.date }));
+    if (cfg.code === "IL") named.forEach((x) => { if (x.name === "IEP meeting") x.name = "Evaluation and IEP meeting"; });
+    const all = [{ name: "Consent signed", done: true }].concat(named);
+    const here = all.findIndex((x) => !x.done && x.date && x.date >= t);
+    const items = all.map((x, i) => {
+      let cls = "", note = "";
+      if (x.done) { cls = "done"; note = "You did this"; }
+      else if (i === here) { cls = "here"; note = "You are here: due " + when(t, x.date); }
+      else if (x.date && x.date < t) { cls = "late"; note = "Date passed. Did it happen?"; }
+      return '<li class="' + cls + '"><span class="dot"></span><span class="p-name">' + esc(x.name) + '</span>' + (note ? '<span class="p-note">' + esc(note) + "</span>" : "") + "</li>";
+    }).join("");
+    const doneCount = here === -1 ? all.length : here;
+    $("progress").innerHTML = '<p class="p-head">Step ' + Math.min(doneCount + 1, all.length) + " of " + all.length + ". " +
+      (here === -1 ? "Every date in this timeline has passed. If a step hasn't happened, the letter below can help." : "You've already done the hardest part: asking.") +
+      "</p><ol>" + items + "</ol>";
   }
 
   // ---- Paid follow-up letter ----
@@ -134,24 +156,38 @@
 
   function renderLetter(input, t) {
     if (!letterOn) return;
+    const modeEl = document.querySelector('input[name="l-mode"]:checked');
+    const mode = modeEl ? modeEl.value : "auto";
     const L = IEPLetter.buildLetter(cfg.code, lastRows, input.consent, t, {
       child: $("l-child").value, parent: $("l-parent").value, school: $("l-school").value, recipient: $("l-recipient").value,
+      mode, firstSent: $("l-first-sent").value || null, meetingDate: $("l-meeting").value || input.iepDate || null,
     });
+    // The "auto" letter switches between confirming and following up, so its label follows today's date.
+    const autoKind = mode === "auto" ? L.kind : IEPLetter.buildLetter(cfg.code, lastRows, input.consent, t, {}).kind;
+    $("l-mode-auto-label").textContent = autoKind === "overdue" ? "A date has passed" : "Confirm the dates";
+    $("l-escalate-fields").hidden = mode !== "escalate";
+    $("l-recap-fields").hidden = mode !== "recap";
+    $("why-polite").textContent = IEPLetter.WHY_POLITE[L.kind] || "";
     const para = (x) => "<p>" + esc(x).replace(/\n/g, "<br>") + "</p>";
     const open = unlocked();
-    $("letter-eyebrow").textContent = L.kind === "overdue" ? "A deadline has passed" : "Get the dates in writing";
+    $("letter-eyebrow").textContent = { overdue: "A deadline has passed", escalate: "No reply yet", recap: "After the meeting" }[L.kind] || "Get the dates in writing";
     $("letter-subject").textContent = L.subject;
     $("letter-free").innerHTML = L.paragraphs.slice(0, L.preview).map(para).join("");
     $("letter-rest").innerHTML = open ? L.paragraphs.slice(L.preview).map(para).join("") : "";
     $("letter-lock").hidden = open;
     $("letter-actions").hidden = !open;
     $("letter-edit-note").hidden = !open;
+    $("letter-edit-note").textContent = L.kind === "recap"
+      ? "Fill in the parts in [brackets] with what was said at the meeting, and delete any line you don't need, before sending."
+      : "Something already happened, like you got the report? Edit those lines in your email before sending.";
     $("prep-pack").hidden = !open;
     if (open) {
       $("prep-pack").innerHTML = '<h3 class="prep-title">IEP meeting prep</h3>' +
         IEPLetter.buildPrepPack(cfg.code, $("l-child").value).map((sec) =>
-          "<h4>" + esc(sec.title) + "</h4><ul>" + sec.items.map((i) => "<li>" + esc(i) + "</li>").join("") + "</ul>"
+          "<h4>" + esc(sec.title) + "</h4><ul>" + sec.items.map((i) => "<li>" + esc(i).replace(/https:\/\/[^\s]+/g, (u) => '<a href="' + u + '" target="_blank" rel="noopener">' + u.replace(/^https:\/\/(www\.)?/, "").split("/")[0] + "</a>") + "</li>").join("") + "</ul>"
         ).join("") +
+        "<h4>Words you'll hear</h4><dl class=\"glossary\">" +
+        IEPLetter.buildGlossary(cfg.code).map(([w, d]) => "<dt>" + esc(w) + "</dt><dd>" + esc(d) + "</dd>").join("") + "</dl>" +
         '<button type="button" class="ghost" id="print-prep">Print the prep checklist</button>';
       $("print-prep").onclick = () => { document.body.classList.add("print-prep"); window.print(); document.body.classList.remove("print-prep"); };
     }
@@ -218,13 +254,13 @@
       const saved = JSON.parse(localStorage.getItem(saveKey) || "{}");
       fields.forEach((el) => {
         if (!(el.id in saved)) return;
-        if (el.type === "checkbox") el.checked = !!saved[el.id];
+        if (el.type === "checkbox" || el.type === "radio") el.checked = !!saved[el.id];
         else el.value = saved[el.id];
       });
     } catch (e) {}
     const save = () => {
       const data = {};
-      fields.forEach((el) => { data[el.id] = el.type === "checkbox" ? el.checked : el.value; });
+      fields.forEach((el) => { data[el.id] = el.type === "checkbox" || el.type === "radio" ? el.checked : el.value; });
       try { localStorage.setItem(saveKey, JSON.stringify(data)); } catch (e) {}
     };
     form.addEventListener("input", () => { save(); render(); });
