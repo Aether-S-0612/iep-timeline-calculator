@@ -4,6 +4,8 @@ const path = require("path");
 
 const ROOT = path.join(__dirname, "..");
 const OUT = path.join(ROOT, "public");
+// Paid letter. live=false hides it unless the URL has ?preview. checkoutUrl is the payment link.
+const PAYWALL = { live: false, price: "$12", checkoutUrl: process.env.CHECKOUT_URL || "" };
 const SITE = (process.env.SITE_URL || "https://www.iepdeadlines.com").replace(/\/$/, "");
 const SITE_NAME = "IEP Timeline Calculator";
 const STATES = require(path.join(ROOT, "src", "states.js"));
@@ -63,7 +65,7 @@ function statePage(code, s) {
     offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
     url: `${SITE}/${s.slug}/`,
   };
-  const cfg = { code, years: s.years, closures: s.closures };
+  const cfg = { code, name: s.name, years: s.years, closures: s.closures };
   const body = `
 <section class="hero">
 <p class="eyebrow">${esc(s.name)} IEP Timeline Calculator</p>
@@ -102,6 +104,43 @@ function statePage(code, s) {
   <p class="small">Calendar reminders arrive 7 days before each date, so nothing sneaks up on you.</p>
 </section>
 
+<section id="letter" class="card letter" hidden>
+  <p class="eyebrow" id="letter-eyebrow"></p>
+  <h2 style="margin-top:4px">Your letter to the school, already written</h2>
+  <p class="lead">We filled in your dates and the exact rule. Add names if you like. Nothing you type leaves your browser.</p>
+  <div class="grid2">
+    <div><label for="l-child">Child's first name</label><input type="text" id="l-child" maxlength="40"></div>
+    <div><label for="l-parent">Your name</label><input type="text" id="l-parent" maxlength="60"></div>
+    <div><label for="l-school">School <span class="hint">optional</span></label><input type="text" id="l-school" maxlength="80"></div>
+    <div><label for="l-recipient">Addressed to <span class="hint">optional</span></label><input type="text" id="l-recipient" maxlength="80" placeholder="Director of Special Education"></div>
+  </div>
+  <div class="letter-box">
+    <div class="letter-subject"><span>Subject:</span> <strong id="letter-subject"></strong></div>
+    <div id="letter-free"></div>
+    <div id="letter-rest"></div>
+    <div class="letter-lock" id="letter-lock">
+      <div class="letter-fake" aria-hidden="true"></div>
+      <div class="lock-card">
+        <p class="lock-title">Unlock the full letter</p>
+        <ul>
+          <li>The rest of your letter, with what to ask for and by when</li>
+          <li>Send it from your own email in one click, so you keep the record</li>
+          <li>IEP meeting prep: a checklist and questions to ask</li>
+        </ul>
+        <a class="button" id="buy" href="#">Unlock for <span class="price"></span></a>
+        <p class="small">One-time payment. 14-day money-back guarantee.</p>
+      </div>
+    </div>
+  </div>
+  <div class="actions" id="letter-actions" hidden>
+    <a class="button" id="send-gmail" target="_blank" rel="noopener">Send with Gmail</a>
+    <a class="button ghost" id="send-mail">Send with my email app</a>
+    <button type="button" class="ghost" id="copy-letter">Copy letter</button>
+  </div>
+  <p class="small" id="letter-edit-note" hidden>Something already happened, like you got the report? Edit those lines in your email before sending.</p>
+  <p class="small" id="letter-sent-note" hidden>Your email app opens with everything filled in. Add the school's email address and press send. Keep the sent email as your record.</p>
+</section>
+
 <section class="card next-steps">
   <h2 style="margin-top:0">What you can do now</h2>
   <ul>
@@ -131,7 +170,9 @@ ${s.faq.map(([q, a]) => `<h3>${esc(q)}</h3><p>${esc(a)}</p>`).join("\n")}
 </section>
 
 <script>window.STATE_CONFIG = ${JSON.stringify(cfg)};</script>
+<script>window.PAYWALL = ${JSON.stringify(PAYWALL)};</script>
 <script src="/calc.js"></script>
+<script src="/letter.js"></script>
 <script src="/app.js"></script>
 `;
   return layout({
@@ -262,7 +303,7 @@ write("terms/index.html", termsPage());
 write("privacy/index.html", privacyPage());
 write("refunds/index.html", refundsPage());
 for (const [code, s] of Object.entries(STATES)) write(`${s.slug}/index.html`, statePage(code, s));
-for (const f of ["calc.js", "app.js", "style.css"]) fs.copyFileSync(path.join(ROOT, "src", f), path.join(OUT, f));
+for (const f of ["calc.js", "letter.js", "app.js", "style.css"]) fs.copyFileSync(path.join(ROOT, "src", f), path.join(OUT, f));
 for (const f of fs.readdirSync(path.join(ROOT, "static"))) fs.copyFileSync(path.join(ROOT, "static", f), path.join(OUT, f));
 
 const urls = ["/", "/about/", "/terms/", "/privacy/", "/refunds/", ...Object.values(STATES).map((s) => `/${s.slug}/`)];

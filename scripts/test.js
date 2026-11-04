@@ -53,4 +53,20 @@ eq(r.iep, "2027-08-17", "IL end-of-year rule");
 // Jan: 4-8 -> 34, 11-15 -> 39, 19-22 -> 43, 25-29 -> 48; Feb: 1-5 -> 53, 8-11 -> 57 (12th Lincoln), 16,17,18 -> 60
 eq(run("IL", "2026-11-03").iep, "2027-02-18", "IL 60 school days");
 
+// Letter generator
+const Lt = require(path.join(__dirname, "..", "src", "letter.js"));
+function letter(code, consent, today) {
+  const s = S[code];
+  const rows = C.compute(code, { consent, years: s.years, closures: s.closures });
+  return Lt.buildLetter(code, rows, consent, today, { child: "Maya" });
+}
+let L = letter("NY", "2026-11-03", "2027-01-05");
+eq(L.kind, "overdue", "NY letter overdue after eval date");
+eq(/8 NYCRR §200\.4\(b\)\(7\)/.test(L.paragraphs[2]), true, "NY letter cites eval rule");
+eq(/passed 3 days ago/.test(L.paragraphs[2]), true, "NY letter days late");
+L = letter("IL", "2026-11-03", "2026-11-10");
+eq(L.kind, "confirm", "IL letter confirm before deadline");
+eq(/February 18, 2027/.test(L.paragraphs[2]), true, "IL letter confirms 60 school day date");
+eq(/;/.test(letter("PA", "2026-08-01", "2026-11-04").paragraphs[2]), false, "PA letter uses one cite per step");
+
 console.log("All", n, "checks passed");

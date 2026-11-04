@@ -61,6 +61,43 @@
   <p class="small">Calendar reminders arrive 7 days before each date, so nothing sneaks up on you.</p>
 </section>
 
+<section id="letter" class="card letter" hidden>
+  <p class="eyebrow" id="letter-eyebrow"></p>
+  <h2 style="margin-top:4px">Your letter to the school, already written</h2>
+  <p class="lead">We filled in your dates and the exact rule. Add names if you like. Nothing you type leaves your browser.</p>
+  <div class="grid2">
+    <div><label for="l-child">Child's first name</label><input type="text" id="l-child" maxlength="40"></div>
+    <div><label for="l-parent">Your name</label><input type="text" id="l-parent" maxlength="60"></div>
+    <div><label for="l-school">School <span class="hint">optional</span></label><input type="text" id="l-school" maxlength="80"></div>
+    <div><label for="l-recipient">Addressed to <span class="hint">optional</span></label><input type="text" id="l-recipient" maxlength="80" placeholder="Director of Special Education"></div>
+  </div>
+  <div class="letter-box">
+    <div class="letter-subject"><span>Subject:</span> <strong id="letter-subject"></strong></div>
+    <div id="letter-free"></div>
+    <div id="letter-rest"></div>
+    <div class="letter-lock" id="letter-lock">
+      <div class="letter-fake" aria-hidden="true"></div>
+      <div class="lock-card">
+        <p class="lock-title">Unlock the full letter</p>
+        <ul>
+          <li>The rest of your letter, with what to ask for and by when</li>
+          <li>Send it from your own email in one click, so you keep the record</li>
+          <li>IEP meeting prep: a checklist and questions to ask</li>
+        </ul>
+        <a class="button" id="buy" href="#">Unlock for <span class="price"></span></a>
+        <p class="small">One-time payment. 14-day money-back guarantee.</p>
+      </div>
+    </div>
+  </div>
+  <div class="actions" id="letter-actions" hidden>
+    <a class="button" id="send-gmail" target="_blank" rel="noopener">Send with Gmail</a>
+    <a class="button ghost" id="send-mail">Send with my email app</a>
+    <button type="button" class="ghost" id="copy-letter">Copy letter</button>
+  </div>
+  <p class="small" id="letter-edit-note" hidden>Something already happened, like you got the report? Edit those lines in your email before sending.</p>
+  <p class="small" id="letter-sent-note" hidden>Your email app opens with everything filled in. Add the school's email address and press send. Keep the sent email as your record.</p>
+</section>
+
 <section class="card next-steps">
   <h2 style="margin-top:0">What you can do now</h2>
   <ul>
@@ -95,8 +132,10 @@
 <h3>What counts as a school day?</h3><p>A day students attend school for instruction. Weekends, holidays, recesses and summer do not count. Because every district's calendar is different, edit the closure list to match yours.</p>
 </section>
 
-<script>window.STATE_CONFIG = {"code":"NY","years":[{"first":"2026-09-09","last":"2027-06-25"},{"first":"2027-09-09","last":"2028-06-23"}],"closures":"# Example closures - replace with your district calendar\n2026-10-12  # Indigenous Peoples' Day\n2026-11-03  # Election Day\n2026-11-11  # Veterans Day\n2026-11-26 to 2026-11-27  # Thanksgiving\n2026-12-24 to 2027-01-01  # Winter recess\n2027-01-18  # MLK Day\n2027-02-15 to 2027-02-19  # Midwinter recess\n2027-04-19 to 2027-04-23  # Spring recess\n2027-05-31  # Memorial Day\n2027-06-18  # Juneteenth (observed)\n2027-10-11  # Indigenous Peoples' Day\n2027-11-02  # Election Day\n2027-11-11  # Veterans Day\n2027-11-25 to 2027-11-26  # Thanksgiving\n2027-12-24 to 2027-12-31  # Winter recess\n2028-01-17  # MLK Day\n2028-02-21 to 2028-02-25  # Midwinter recess\n2028-04-10 to 2028-04-14  # Spring recess\n2028-05-29  # Memorial Day\n2028-06-19  # Juneteenth"};</script>
+<script>window.STATE_CONFIG = {"code":"NY","name":"New York","years":[{"first":"2026-09-09","last":"2027-06-25"},{"first":"2027-09-09","last":"2028-06-23"}],"closures":"# Example closures - replace with your district calendar\n2026-10-12  # Indigenous Peoples' Day\n2026-11-03  # Election Day\n2026-11-11  # Veterans Day\n2026-11-26 to 2026-11-27  # Thanksgiving\n2026-12-24 to 2027-01-01  # Winter recess\n2027-01-18  # MLK Day\n2027-02-15 to 2027-02-19  # Midwinter recess\n2027-04-19 to 2027-04-23  # Spring recess\n2027-05-31  # Memorial Day\n2027-06-18  # Juneteenth (observed)\n2027-10-11  # Indigenous Peoples' Day\n2027-11-02  # Election Day\n2027-11-11  # Veterans Day\n2027-11-25 to 2027-11-26  # Thanksgiving\n2027-12-24 to 2027-12-31  # Winter recess\n2028-01-17  # MLK Day\n2028-02-21 to 2028-02-25  # Midwinter recess\n2028-04-10 to 2028-04-14  # Spring recess\n2028-05-29  # Memorial Day\n2028-06-19  # Juneteenth"};</script>
+<script>window.PAYWALL = {"live":false,"price":"$12","checkoutUrl":""};</script>
 <script src="/calc.js"></script>
+<script src="/letter.js"></script>
 <script src="/app.js"></script>
 
 </main>

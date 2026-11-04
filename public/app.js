@@ -84,6 +84,52 @@
       })
       .join("");
     out.hidden = false;
+    renderLetter(input, t);
+  }
+
+  // ---- Paid follow-up letter ----
+  const pay = window.PAYWALL || { live: false };
+  const params = new URLSearchParams(location.search);
+  const letterOn = !!window.IEPLetter && $("letter") && (pay.live || params.has("preview"));
+  function unlocked() {
+    if (params.get("preview") === "full") return true;
+    try { return localStorage.getItem("iep-letter-unlocked") === "1"; } catch (e) { return false; }
+  }
+  const FAKE = "Please reply in writing within five school days and tell me the date this will be completed, the reason for the delay, and who is responsible. ";
+
+  function renderLetter(input, t) {
+    if (!letterOn) return;
+    const L = IEPLetter.buildLetter(cfg.code, lastRows, input.consent, t, {
+      child: $("l-child").value, parent: $("l-parent").value, school: $("l-school").value, recipient: $("l-recipient").value,
+    });
+    const para = (x) => "<p>" + esc(x).replace(/\n/g, "<br>") + "</p>";
+    const open = unlocked();
+    $("letter-eyebrow").textContent = L.kind === "overdue" ? "A deadline has passed" : "Get the dates in writing";
+    $("letter-subject").textContent = L.subject;
+    $("letter-free").innerHTML = L.paragraphs.slice(0, L.preview).map(para).join("");
+    $("letter-rest").innerHTML = open ? L.paragraphs.slice(L.preview).map(para).join("") : "";
+    $("letter-lock").hidden = open;
+    $("letter-actions").hidden = !open;
+    $("letter-edit-note").hidden = !open;
+    if (!open) {
+      document.querySelector(".letter-fake").innerHTML = "<p>" + FAKE.repeat(2) + "</p><p>" + FAKE + "</p>";
+      document.querySelectorAll("#letter .price").forEach((n) => (n.textContent = pay.price || ""));
+      const buy = $("buy");
+      if (pay.checkoutUrl) buy.href = pay.checkoutUrl;
+      else { buy.removeAttribute("href"); buy.classList.add("disabled"); buy.textContent = "Coming soon"; }
+    } else {
+      const text = IEPLetter.toText(L);
+      $("send-gmail").href = "https://mail.google.com/mail/?view=cm&fs=1&su=" + encodeURIComponent(L.subject) + "&body=" + encodeURIComponent(text);
+      $("send-mail").href = "mailto:?subject=" + encodeURIComponent(L.subject) + "&body=" + encodeURIComponent(text);
+      $("copy-letter").onclick = () => {
+        navigator.clipboard && navigator.clipboard.writeText("Subject: " + L.subject + "\n\n" + text).then(() => {
+          $("copy-letter").textContent = "Copied";
+          setTimeout(() => ($("copy-letter").textContent = "Copy letter"), 1500);
+        });
+      };
+      ["send-gmail", "send-mail"].forEach((id) => $(id).addEventListener("click", () => ($("letter-sent-note").hidden = false)));
+    }
+    $("letter").hidden = false;
   }
 
   function download() {
@@ -105,6 +151,7 @@
     $("closures").value = cfg.closures;
     $("consent").value = today();
     form.addEventListener("input", render);
+    if ($("letter")) $("letter").addEventListener("input", render);
     form.addEventListener("submit", (e) => {
       e.preventDefault();
       render();
