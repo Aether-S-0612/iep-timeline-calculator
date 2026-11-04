@@ -163,14 +163,15 @@
       else { buy.removeAttribute("href"); buy.classList.add("disabled"); buy.textContent = "Coming soon"; }
     } else {
       const text = IEPLetter.toText(L);
-      $("send-gmail").href = "https://mail.google.com/mail/?view=cm&fs=1&su=" + encodeURIComponent(L.subject) + "&body=" + encodeURIComponent(text);
-      $("send-mail").href = "mailto:?subject=" + encodeURIComponent(L.subject) + "&body=" + encodeURIComponent(text);
+      const to = ($("l-to") ? $("l-to").value : "").split(/[,;\s]+/).filter((x) => /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(x)).join(",");
+      $("send-gmail").href = "https://mail.google.com/mail/?view=cm&fs=1&to=" + encodeURIComponent(to) + "&su=" + encodeURIComponent(L.subject) + "&body=" + encodeURIComponent(text);
+      $("send-mail").href = "mailto:" + to + "?subject=" + encodeURIComponent(L.subject) + "&body=" + encodeURIComponent(text);
       // Gmail's web compose link doesn't open a draft on phones; there, the mail app (mailto) is the main button.
       const mobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || (navigator.maxTouchPoints > 1 && /Mac/.test(navigator.platform));
       const ios = /iPhone|iPad|iPod/i.test(navigator.userAgent) || (navigator.maxTouchPoints > 1 && /Mac/.test(navigator.platform));
       if (ios) {
         // iPhone: open the Gmail app directly (works when the app is installed).
-        $("send-gmail").href = "googlegmail:///co?subject=" + encodeURIComponent(L.subject) + "&body=" + encodeURIComponent(text);
+        $("send-gmail").href = "googlegmail:///co?to=" + encodeURIComponent(to) + "&subject=" + encodeURIComponent(L.subject) + "&body=" + encodeURIComponent(text);
         $("send-gmail").removeAttribute("target");
         $("send-gmail").textContent = "Send with Gmail app";
         $("send-mail").textContent = "Open in my email app";
