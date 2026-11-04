@@ -1,3 +1,3 @@
 User-agent: *
 Allow: /
-Sitemap: https://iep-timeline-calculator.vercel.app/sitemap.xml
+Sitemap: https://iep-timeline-calculator-five.vercel.app/sitemap.xml
