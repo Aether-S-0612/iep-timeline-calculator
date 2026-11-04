@@ -85,11 +85,63 @@
     return { kind, subject, paragraphs: p, preview: 3 };
   }
 
+  // IEP meeting prep pack (part of the paid unlock). Federal cites below are 34 CFR Part 300.
+  const REPORT_TIMING = {
+    PA: "Pennsylvania requires the school to give you the Evaluation Report at least 10 school days before the IEP meeting, unless you waive this in writing (22 Pa. Code §14.123(d)). If it hasn't arrived, ask for it now.",
+    NY: "Ask for copies of every evaluation report at least a week before the CSE meeting, so you are not reading them for the first time at the table.",
+    IL: "Ask for copies of every evaluation report at least a week before the eligibility and IEP meeting, so you are not reading them for the first time at the table.",
+  };
+  function buildPrepPack(code, child) {
+    child = (child || "").trim() || "your child";
+    return [
+      {
+        title: "One week before the meeting",
+        items: [
+          REPORT_TIMING[code] || REPORT_TIMING.NY,
+          "Ask who will attend and what each person's role is.",
+          "Ask for a draft of the IEP goals, if the school has one. Reading it early makes the meeting shorter and calmer.",
+          "Write a one-page \"parent concerns\" note: " + child + "'s strengths, what worries you, and what you want to see change this year. The IEP team must consider the parents' concerns (34 CFR §300.324(a)(1)(ii)).",
+          "Decide if you want someone with you: a partner, a friend, or an advocate. You may bring people who know " + child + " (34 CFR §300.321(a)(6)).",
+        ],
+      },
+      {
+        title: "Questions to ask at the meeting",
+        items: [
+          "What did the evaluation show about " + child + "'s strengths?",
+          "Which areas does " + child + " qualify for help in, and which were ruled out? Why?",
+          "For each goal: how will progress be measured, and how often will I get a progress report?",
+          "Exactly which services will " + child + " get, how many minutes a week, and from whom?",
+          "Where will services happen: in the classroom or somewhere else?",
+          "What accommodations will " + child + " have in class and on tests?",
+          "When do services start?",
+          "Who is my main contact if something isn't working?",
+          "What can we do at home to support the same goals?",
+          "When is the next review, and can I ask for a meeting before then?",
+        ],
+      },
+      {
+        title: "Before you sign",
+        items: [
+          "You can ask for time to read the final IEP at home before you sign. You don't have to decide at the table.",
+          "If you agree with part of it, ask how to note what you disagree with in writing.",
+          "Ask for a copy of everything you sign.",
+        ],
+      },
+      {
+        title: "After the meeting",
+        items: [
+          "Within a day, email a short summary to the team: what was agreed, who will do what, and by when. Ask them to reply if anything is wrong. This becomes your record.",
+          "Put the start date of services and the next review date in your calendar.",
+        ],
+      },
+    ];
+  }
+
   function toText(letter) {
     return letter.paragraphs.join("\n\n");
   }
 
-  const api = { buildLetter, toText };
+  const api = { buildLetter, buildPrepPack, toText };
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   else root.IEPLetter = api;
 })(typeof window !== "undefined" ? window : globalThis);

@@ -139,6 +139,7 @@ function statePage(code, s) {
   </div>
   <p class="small" id="letter-edit-note" hidden>Something already happened, like you got the report? Edit those lines in your email before sending.</p>
   <p class="small" id="letter-sent-note" hidden>Your email app opens with everything filled in. Add the school's email address and press send. Keep the sent email as your record.</p>
+  <div id="prep-pack" hidden></div>
 </section>
 
 <section class="card next-steps">

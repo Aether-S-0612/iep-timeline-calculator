@@ -111,6 +111,15 @@
     $("letter-lock").hidden = open;
     $("letter-actions").hidden = !open;
     $("letter-edit-note").hidden = !open;
+    $("prep-pack").hidden = !open;
+    if (open) {
+      $("prep-pack").innerHTML = '<h3 class="prep-title">IEP meeting prep</h3>' +
+        IEPLetter.buildPrepPack(cfg.code, $("l-child").value).map((sec) =>
+          "<h4>" + esc(sec.title) + "</h4><ul>" + sec.items.map((i) => "<li>" + esc(i) + "</li>").join("") + "</ul>"
+        ).join("") +
+        '<button type="button" class="ghost" id="print-prep">Print the prep checklist</button>';
+      $("print-prep").onclick = () => { document.body.classList.add("print-prep"); window.print(); document.body.classList.remove("print-prep"); };
+    }
     if (!open) {
       document.querySelector(".letter-fake").innerHTML = "<p>" + FAKE.repeat(2) + "</p><p>" + FAKE + "</p>";
       document.querySelectorAll("#letter .price").forEach((n) => (n.textContent = pay.price || ""));
