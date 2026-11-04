@@ -209,6 +209,7 @@ write("index.html", homePage());
 write("about/index.html", aboutPage());
 for (const [code, s] of Object.entries(STATES)) write(`${s.slug}/index.html`, statePage(code, s));
 for (const f of ["calc.js", "app.js", "style.css"]) fs.copyFileSync(path.join(ROOT, "src", f), path.join(OUT, f));
+for (const f of fs.readdirSync(path.join(ROOT, "static"))) fs.copyFileSync(path.join(ROOT, "static", f), path.join(OUT, f));
 
 const urls = ["/", "/about/", ...Object.values(STATES).map((s) => `/${s.slug}/`)];
 const today = new Date().toISOString().slice(0, 10);
