@@ -1,0 +1,222 @@
+// Builds the static site into public/. Run: SITE_URL=https://your-domain node scripts/build.js
+const fs = require("fs");
+const path = require("path");
+
+const ROOT = path.join(__dirname, "..");
+const OUT = path.join(ROOT, "public");
+const SITE = (process.env.SITE_URL || "https://iep-timeline-calculator.vercel.app").replace(/\/$/, "");
+const SITE_NAME = "IEP Timeline Calculator";
+const STATES = require(path.join(ROOT, "src", "states.js"));
+
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+
+function layout({ title, description, canonical, body, head = "" }) {
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>${esc(title)}</title>
+<meta name="description" content="${esc(description)}">
+<link rel="canonical" href="${SITE}${canonical}">
+<meta property="og:title" content="${esc(title)}">
+<meta property="og:description" content="${esc(description)}">
+<meta property="og:type" content="website">
+<meta property="og:url" content="${SITE}${canonical}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/style.css">
+${head}
+</head>
+<body>
+<header class="site"><div class="wrap">
+<a class="brand" href="/">${SITE_NAME}</a>
+<nav>${Object.values(STATES).map((s) => `<a href="/${s.slug}/">${s.name}</a>`).join("")}<a href="/about/">About</a></nav>
+</div></header>
+<main class="wrap">
+${body}
+</main>
+<footer><div class="wrap">
+Estimates only, not legal advice. Deadlines depend on your district's calendar and on facts this tool cannot see. Always confirm with your school district or state education agency. <a href="/about/">Sources and method</a>.
+</div></footer>
+</body>
+</html>
+`;
+}
+
+function statePage(code, s) {
+  const title = `${s.name} IEP Timeline Calculator (${new Date(s.lastChecked).getUTCFullYear()}) – Evaluation & IEP Deadlines`;
+  const description = `Free ${s.name} special education timeline calculator. Enter the consent date to get the evaluation, IEP meeting, annual review and reevaluation deadlines, with the regulation for each.`;
+  const faqLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: s.faq.map(([q, a]) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } })),
+  };
+  const appLd = {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    name: `${s.name} IEP Timeline Calculator`,
+    applicationCategory: "EducationalApplication",
+    operatingSystem: "Any",
+    offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+    url: `${SITE}/${s.slug}/`,
+  };
+  const cfg = { code, years: s.years, closures: s.closures };
+  const body = `
+<section class="hero">
+<p class="eyebrow">${esc(s.name)} IEP Timeline Calculator</p>
+<h1>When does the school have to act?</h1>
+<p class="hero-text">Waiting on the school after you ask for an evaluation can feel like nothing is happening. You have rights, and the school has deadlines. Tell us the day the school got your signed consent, and we'll show you exactly when each step has to happen.</p>
+</section>
+
+<form id="calc-form" class="card" autocomplete="off">
+  <label for="consent">When did the school receive your signed consent form?<span class="hint">Not sure? Use the day you handed it in or emailed it.</span></label>
+  <input type="date" id="consent" required>
+  ${s.hasIntellectualDisability ? `<label class="check"><input type="checkbox" id="id-box"> My child has an intellectual disability (reevaluated every 2 years)</label>` : ""}
+  <details>
+    <summary>Adjust the school calendar (recommended)</summary>
+    <p class="lead">School-day deadlines depend on your district's calendar. These are typical example dates. Replace them with your district's dates for an accurate result.</p>
+    <div class="grid2">
+      <div><label for="y1-first">This school year: first day</label><input type="date" id="y1-first"></div>
+      <div><label for="y1-last">This school year: last day</label><input type="date" id="y1-last"></div>
+      <div><label for="y2-first">Next school year: first day</label><input type="date" id="y2-first"></div>
+      <div><label for="y2-last">Next school year: last day</label><input type="date" id="y2-last"></div>
+    </div>
+    <label for="closures">Days school is closed <span class="hint">one per line, YYYY-MM-DD or a range "YYYY-MM-DD to YYYY-MM-DD"</span></label>
+    <textarea id="closures" spellcheck="false"></textarea>
+    <label for="iep-date">Actual IEP meeting date <span class="hint">optional, to count annual review and reevaluation from it</span></label>
+    <input type="date" id="iep-date">
+  </details>
+</form>
+
+<section id="results" class="card" hidden aria-live="polite">
+  <h2 style="margin-top:0">Here's your timeline</h2>
+  <p class="lead">These are the latest dates the rules allow. The school can, and often should, move sooner.</p>
+  <ol id="result-rows" class="timeline"></ol>
+  <div class="actions">
+    <button type="button" id="ics">Add these dates to my calendar</button>
+    <button type="button" id="print" class="ghost">Print or save as PDF</button>
+  </div>
+  <p class="small">Calendar reminders arrive 7 days before each date, so nothing sneaks up on you.</p>
+</section>
+
+<section class="card next-steps">
+  <h2 style="margin-top:0">What you can do now</h2>
+  <ul>
+    <li><strong>Keep it in writing.</strong> Send requests and questions by email so there's a dated record.</li>
+    <li><strong>Ask for the plan.</strong> It's fair to ask the school, "What are the next steps, and when?"</li>
+    <li><strong>If a date passes,</strong> send a short, polite email noting the deadline and asking when it will happen.</li>
+    <li><strong>You don't have to do this alone.</strong> Every state has a free Parent Training and Information Center. <a href="https://www.parentcenterhub.org/find-your-center/" target="_blank" rel="noopener">Find yours</a>.</li>
+  </ul>
+  <p class="small">Case manager or school psychologist? The same dates work for your caseload. Add each student's timeline to your calendar.</p>
+</section>
+
+<section class="rules">
+<h2>${esc(s.name)} special education timelines</h2>
+<p>${esc(s.intro)}</p>
+<table>
+<thead><tr><th>Step</th><th>Deadline</th><th>Rule</th></tr></thead>
+<tbody>
+${s.rules.map(([a, b, c]) => `<tr><td>${esc(a)}</td><td>${esc(b)}</td><td>${esc(c)}</td></tr>`).join("\n")}
+</tbody>
+</table>
+<p class="lead" style="margin-top:8px">Rules last checked against the regulation text on ${esc(s.lastChecked)}.</p>
+</section>
+
+<section class="faq">
+<h2>Common questions</h2>
+${s.faq.map(([q, a]) => `<h3>${esc(q)}</h3><p>${esc(a)}</p>`).join("\n")}
+</section>
+
+<script>window.STATE_CONFIG = ${JSON.stringify(cfg)};</script>
+<script src="/calc.js"></script>
+<script src="/app.js"></script>
+`;
+  return layout({
+    title,
+    description,
+    canonical: `/${s.slug}/`,
+    body,
+    head: `<script type="application/ld+json">${JSON.stringify(appLd)}</script>\n<script type="application/ld+json">${JSON.stringify(faqLd)}</script>`,
+  });
+}
+
+function homePage() {
+  const body = `
+<h1>When does the school have to act?</h1>
+<section class="hero">
+<p class="hero-text">Asked the school to evaluate your child and now you're waiting? The law gives the school deadlines. Pick your state, enter the day the school got your signed consent, and see exactly when each step has to happen, with the rule behind every date. Free, no sign-up, and nothing you type leaves your browser.</p>
+</section>
+<div class="states">
+${Object.values(STATES)
+  .map((s) => `<a class="card" href="/${s.slug}/"><strong>${esc(s.name)}</strong><br><span class="lead">Evaluation, IEP meeting, annual review and reevaluation dates</span></a>`)
+  .join("\n")}
+</div>
+<h2>Who this is for</h2>
+<p>Parents who want to know when the school has to finish an evaluation or hold the IEP meeting, and case managers, school psychologists and special education teachers who track many students' deadlines.</p>
+<h2>Why a calculator?</h2>
+<p>Some deadlines are counted in calendar days and others in school days, and some states pause the clock over summer. Counting school days by hand around holidays and breaks is easy to get wrong. This calculator applies each state's rule to the calendar you enter and shows the regulation for every date so you can check it.</p>
+<p class="notice">More states are coming soon.</p>
+`;
+  return layout({
+    title: "IEP Timeline Calculator – Special Education Evaluation & IEP Deadlines by State",
+    description: "Free calculator for special education deadlines by state: initial evaluation, IEP meeting, services start, annual review and reevaluation, with the regulation for each date.",
+    canonical: "/",
+    body,
+  });
+}
+
+function aboutPage() {
+  const body = `
+<h1>About this calculator</h1>
+<p>This free tool turns each state's special education timeline rules into dates. It is built and maintained independently. It is not affiliated with any school district or state education agency.</p>
+<h2>How the dates are calculated</h2>
+<ul>
+<li><strong>Calendar days</strong> count every day, including weekends and holidays.</li>
+<li><strong>School days</strong> count weekdays inside the school year that are not on the closure list you entered.</li>
+<li>The day consent is received is day 0. The deadline is the last day the rule allows.</li>
+<li>Annual review and reevaluation dates are counted from the IEP date you enter, or from the latest allowed IEP date if you leave it blank.</li>
+</ul>
+<h2>Sources</h2>
+<ul>
+<li><a href="https://www.law.cornell.edu/regulations/new-york/8-NYCRR-200.4">New York: 8 NYCRR §200.4</a></li>
+<li><a href="https://www.law.cornell.edu/regulations/pennsylvania/22-Pa-Code-SS-14-123">Pennsylvania: 22 Pa. Code §14.123</a>, <a href="https://www.law.cornell.edu/regulations/pennsylvania/22-Pa-Code-SS-14-124">§14.124</a>, <a href="https://www.law.cornell.edu/regulations/pennsylvania/22-Pa-Code-SS-14-131">§14.131</a></li>
+<li><a href="https://www.law.cornell.edu/regulations/illinois/Ill-Admin-Code-tit-23-SS-226.110">Illinois: 23 Ill. Adm. Code §226.110</a></li>
+<li>Federal: <a href="https://www.law.cornell.edu/cfr/text/34/300.303">34 CFR §300.303</a>, <a href="https://www.law.cornell.edu/cfr/text/34/300.323">§300.323</a>, <a href="https://www.law.cornell.edu/cfr/text/34/300.324">§300.324</a></li>
+</ul>
+<h2>Limits</h2>
+<p>Results are estimates. They are only as accurate as the school calendar you enter, and they do not cover every exception in the regulations (for example, a student who changes districts during an evaluation). This is not legal advice. Confirm deadlines with your district, your state's parent training center, or an advocate.</p>
+<h2>Privacy</h2>
+<p>Everything is calculated in your browser. Nothing you enter is sent to or stored on a server.</p>
+`;
+  return layout({
+    title: "About the IEP Timeline Calculator – Method, Sources and Limits",
+    description: "How the IEP Timeline Calculator counts calendar days and school days, the regulations it uses for each state, and its limits.",
+    canonical: "/about/",
+    body,
+  });
+}
+
+function write(rel, content) {
+  const p = path.join(OUT, rel);
+  fs.mkdirSync(path.dirname(p), { recursive: true });
+  fs.writeFileSync(p, content);
+}
+
+fs.rmSync(OUT, { recursive: true, force: true });
+write("index.html", homePage());
+write("about/index.html", aboutPage());
+for (const [code, s] of Object.entries(STATES)) write(`${s.slug}/index.html`, statePage(code, s));
+for (const f of ["calc.js", "app.js", "style.css"]) fs.copyFileSync(path.join(ROOT, "src", f), path.join(OUT, f));
+
+const urls = ["/", "/about/", ...Object.values(STATES).map((s) => `/${s.slug}/`)];
+const today = new Date().toISOString().slice(0, 10);
+write(
+  "sitemap.xml",
+  `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls
+    .map((u) => `  <url><loc>${SITE}${u}</loc><lastmod>${today}</lastmod></url>`)
+    .join("\n")}\n</urlset>\n`
+);
+write("robots.txt", `User-agent: *\nAllow: /\nSitemap: ${SITE}/sitemap.xml\n`);
+console.log("Built", urls.length, "pages for", SITE);
