@@ -299,9 +299,11 @@ function privacyPage() {
 }
 
 function refundsPage() {
-  return legalPage("refunds", "Refund Policy", "Refund policy for printable templates sold on the IEP Timeline Calculator.", `
-<p>If a template is not useful to you, ask for a refund within 14 days of purchase and you will get your money back in full. No explanation is needed.</p>
+  return legalPage("refunds", "Refund Policy", "Refund policy for the follow-up letter and IEP meeting prep sold on the IEP Timeline Calculator.", `
+<p>If the letter and meeting prep are not useful to you, ask for a refund within 14 days of purchase and you will get your money back in full. No explanation is needed. Refunds are limited to one per customer.</p>
+<p>When a refund is issued, the license key for that purchase stops working.</p>
 <p>Refunds go back to your original payment method through Lemon Squeezy. Depending on your bank, they usually appear within 5 to 10 business days.</p>
+<p>If you think a date we calculated is wrong, please tell us what you entered (state, consent date and school calendar). We check every report, whether or not you ask for a refund.</p>
 <h2>How to ask</h2>
 <p>${contactLine()} Include the email address you used to buy.</p>`);
 }
