@@ -55,7 +55,8 @@ input[type="date"], input[type="text"], textarea {
   width: 100%; padding: 12px; border: 1.5px solid var(--line); border-radius: 12px;
   background: var(--bg); color: var(--text); font: inherit;
 }
-input[type="date"] { cursor: pointer; }
+input[type="date"] { cursor: pointer; -webkit-appearance: none; appearance: none; display: block; min-width: 0; max-width: 100%; min-height: 50px; }
+input[type="date"]::-webkit-date-and-time-value { text-align: left; }
 input[type="date"]::-webkit-calendar-picker-indicator { cursor: pointer; opacity: 0.85; width: 22px; height: 22px; }
 input[type="date"]:focus, input[type="text"]:focus, textarea:focus { outline: none; border-color: var(--accent); }
 textarea { min-height: 220px; font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 13px; }

@@ -4,8 +4,9 @@
   // without focusing a year/month/day part, which the browser would highlight.
   document.querySelectorAll('input[type="date"]').forEach((el) => {
     if (!el.showPicker) return;
-    el.addEventListener("mousedown", (e) => {
-      if (e.button !== 0) return;
+    // Mouse only: on phones the system date wheel opens by itself, and blocking the tap breaks it.
+    el.addEventListener("pointerdown", (e) => {
+      if (e.pointerType !== "mouse" || e.button !== 0) return;
       try { el.showPicker(); e.preventDefault(); } catch (err) {}
     });
   });
