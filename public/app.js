@@ -167,10 +167,18 @@
       $("send-mail").href = "mailto:?subject=" + encodeURIComponent(L.subject) + "&body=" + encodeURIComponent(text);
       // Gmail's web compose link doesn't open a draft on phones; there, the mail app (mailto) is the main button.
       const mobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || (navigator.maxTouchPoints > 1 && /Mac/.test(navigator.platform));
-      if (mobile) {
+      const ios = /iPhone|iPad|iPod/i.test(navigator.userAgent) || (navigator.maxTouchPoints > 1 && /Mac/.test(navigator.platform));
+      if (ios) {
+        // iPhone: open the Gmail app directly (works when the app is installed).
+        $("send-gmail").href = "googlegmail:///co?subject=" + encodeURIComponent(L.subject) + "&body=" + encodeURIComponent(text);
+        $("send-gmail").removeAttribute("target");
+        $("send-gmail").textContent = "Send with Gmail app";
+        $("send-mail").textContent = "Open in my email app";
+      } else if (mobile) {
+        // Android: the mail-app button lets the parent pick Gmail.
         $("send-gmail").hidden = true;
         $("send-mail").classList.remove("ghost");
-        $("send-mail").textContent = "Open in my email app";
+        $("send-mail").textContent = "Open in my email app (Gmail)";
       }
       $("copy-letter").onclick = () => {
         navigator.clipboard && navigator.clipboard.writeText("Subject: " + L.subject + "\n\n" + text).then(() => {
