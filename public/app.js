@@ -1,6 +1,31 @@
 // Page wiring for a state calculator. Reads its defaults from window.STATE_CONFIG.
 (function () {
+  // Key entry works on every page that has a [data-unlock] form (state pages and /unlock/).
+  document.querySelectorAll("form[data-unlock]").forEach((f) => {
+    f.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const msg = f.querySelector(".key-msg");
+      const key = f.key.value.trim();
+      if (!key) return;
+      msg.textContent = "Checking...";
+      try {
+        const r = await fetch("/api/unlock", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ key }) });
+        const d = await r.json();
+        if (!d.ok) { msg.textContent = d.error || "That key didn't work."; return; }
+        try { localStorage.setItem("iep-letter-unlocked", "1"); } catch (err) {}
+        let back = null;
+        try { back = localStorage.getItem("iep-last-page"); } catch (err) {}
+        if (f.dataset.after === "back") location.href = back || "/";
+        else location.reload();
+      } catch (err) {
+        msg.textContent = "Couldn't check the key right now. Please try again in a minute.";
+      }
+    });
+  });
+
   const cfg = window.STATE_CONFIG;
+  if (!cfg) return;
+  try { localStorage.setItem("iep-last-page", location.pathname); } catch (err) {}
   const $ = (id) => document.getElementById(id);
   const form = $("calc-form");
   const out = $("results");

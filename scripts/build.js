@@ -129,6 +129,14 @@ function statePage(code, s) {
         </ul>
         <a class="button" id="buy" href="#">Unlock for <span class="price"></span></a>
         <p class="small">One-time payment. 14-day money-back guarantee.</p>
+        <details class="have-key">
+          <summary>Already bought? Enter your key</summary>
+          <form class="key-form" data-unlock>
+            <input type="text" name="key" placeholder="License key from your receipt email" autocomplete="off" spellcheck="false">
+            <button type="submit">Unlock</button>
+            <p class="small key-msg" role="status"></p>
+          </form>
+        </details>
       </div>
     </div>
   </div>
@@ -291,6 +299,22 @@ function refundsPage() {
 <p>${contactLine()} Include the email address you used to buy.</p>`);
 }
 
+function unlockPage() {
+  const body = `
+<h1>Thank you! Let's unlock your letter</h1>
+<p class="lead">Your receipt email has a <strong>license key</strong>. Paste it below. This browser will remember it, so you only do this once per device.</p>
+<form class="card key-form" data-unlock data-after="back">
+  <label for="unlock-key">License key</label>
+  <input type="text" id="unlock-key" name="key" autocomplete="off" spellcheck="false">
+  <div class="actions"><button type="submit">Unlock my letter</button></div>
+  <p class="small key-msg" role="status"></p>
+</form>
+<p class="small">Can't find the email? Check spam for a message from Lemon Squeezy, or write to ${CONTACT_EMAIL || "us"}.</p>
+<script src="/app.js"></script>
+`;
+  return layout({ title: "Unlock your letter – " + SITE_NAME, description: "Enter your license key to unlock your follow-up letter and IEP meeting prep.", canonical: "/unlock/", body, head: '<meta name="robots" content="noindex">' });
+}
+
 function write(rel, content) {
   const p = path.join(OUT, rel);
   fs.mkdirSync(path.dirname(p), { recursive: true });
@@ -303,6 +327,7 @@ write("about/index.html", aboutPage());
 write("terms/index.html", termsPage());
 write("privacy/index.html", privacyPage());
 write("refunds/index.html", refundsPage());
+write("unlock/index.html", unlockPage());
 for (const [code, s] of Object.entries(STATES)) write(`${s.slug}/index.html`, statePage(code, s));
 for (const f of ["calc.js", "letter.js", "app.js", "style.css"]) fs.copyFileSync(path.join(ROOT, "src", f), path.join(OUT, f));
 for (const f of fs.readdirSync(path.join(ROOT, "static"))) fs.copyFileSync(path.join(ROOT, "static", f), path.join(OUT, f));
