@@ -194,8 +194,25 @@
     $("y2-last").value = cfg.years[1].last;
     $("closures").value = cfg.closures;
     $("consent").value = today();
-    form.addEventListener("input", render);
-    if ($("letter")) $("letter").addEventListener("input", render);
+    // Remember what the parent typed on this page, so a reload doesn't wipe it.
+    const saveKey = "iep-form-" + cfg.code;
+    const fields = Array.from(document.querySelectorAll("#" + form.id + " input, #" + form.id + " textarea, #letter input"))
+      .filter((el) => el.id && el.type !== "submit" && el.type !== "button" && !el.closest("[data-unlock]"));
+    try {
+      const saved = JSON.parse(localStorage.getItem(saveKey) || "{}");
+      fields.forEach((el) => {
+        if (!(el.id in saved)) return;
+        if (el.type === "checkbox") el.checked = !!saved[el.id];
+        else el.value = saved[el.id];
+      });
+    } catch (e) {}
+    const save = () => {
+      const data = {};
+      fields.forEach((el) => { data[el.id] = el.type === "checkbox" ? el.checked : el.value; });
+      try { localStorage.setItem(saveKey, JSON.stringify(data)); } catch (e) {}
+    };
+    form.addEventListener("input", () => { save(); render(); });
+    if ($("letter")) $("letter").addEventListener("input", () => { save(); render(); });
     form.addEventListener("submit", (e) => {
       e.preventDefault();
       render();
