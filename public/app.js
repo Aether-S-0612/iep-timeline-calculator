@@ -1,8 +1,13 @@
 // Page wiring for a state calculator. Reads its defaults from window.STATE_CONFIG.
 (function () {
-  // Clicking anywhere in a date box opens the calendar (not just the small icon).
+  // Clicking anywhere in a date box opens the calendar (not just the small icon),
+  // without focusing a year/month/day part, which the browser would highlight.
   document.querySelectorAll('input[type="date"]').forEach((el) => {
-    el.addEventListener("click", () => { try { el.showPicker && el.showPicker(); } catch (e) {} });
+    if (!el.showPicker) return;
+    el.addEventListener("mousedown", (e) => {
+      if (e.button !== 0) return;
+      try { el.showPicker(); e.preventDefault(); } catch (err) {}
+    });
   });
   // Key entry works on every page that has a [data-unlock] form (state pages and /unlock/).
   document.querySelectorAll("form[data-unlock]").forEach((f) => {
