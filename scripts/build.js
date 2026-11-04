@@ -241,7 +241,7 @@ function aboutPage() {
 }
 
 // Contact address shown on the legal pages. Empty = point buyers to their receipt email.
-const CONTACT_EMAIL = process.env.CONTACT_EMAIL || "";
+const CONTACT_EMAIL = process.env.CONTACT_EMAIL || "iepdeadlines@gmail.com";
 const UPDATED = "November 4, 2026";
 function contactLine() {
   return CONTACT_EMAIL
