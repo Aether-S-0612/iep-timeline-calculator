@@ -36,6 +36,7 @@ function layout({ title, description, canonical, body, head = "" }) {
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/style.css">
 ${head}
+<script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
 <header class="site"><div class="wrap">
