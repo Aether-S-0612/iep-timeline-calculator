@@ -114,4 +114,24 @@ eq(caRun("2026-10-01"), "2026-11-30", "CA 60 days, 5-day Thanksgiving week still
 eq(caRun("2026-12-01"), "2027-02-22", "CA winter break over 5 school days is skipped");
 eq(caRun("2027-05-20"), "2027-09-10", "CA consent within 30 days of year end: 30 days into next year");
 
+// IEP meeting practice: request checks and output cleaning (no API calls)
+const PD = require("../src/practice-data.js");
+const PC = require("../lib/practice-core.js");
+const op = PD.SCENARIOS["wait-see"].opener;
+const okReq = { scenario: "wait-see", state: "NY", history: [{ role: "school", text: op }, { role: "parent", text: "I'd like to ask for an evaluation in writing." }] };
+eq(PC.parseRequest(okReq).error, undefined, "practice valid request");
+eq(!!PC.parseRequest({ ...okReq, state: "TX" }).error, true, "practice unknown state rejected");
+eq(!!PC.parseRequest({ ...okReq, history: [{ role: "school", text: "made up" }, okReq.history[1]] }).error, true, "practice opener must match");
+eq(!!PC.parseRequest({ ...okReq, history: [okReq.history[0], { role: "parent", text: "x".repeat(601) }] }).error, true, "practice 600 char limit");
+const long = [{ role: "school", text: op }];
+for (let i = 0; i < 9; i++) long.push({ role: "parent", text: "hi" }, { role: "school", text: "ok" });
+long.pop();
+eq(!!PC.parseRequest({ ...okReq, history: long }).error, true, "practice max 8 rounds");
+const cleaned = PC.cleanOutput({ mode: "turn", scenario: "wait-see", state: "NY" }, { school_reply: "Okay, under 34 CFR §300.301 we will send it.", coach: { tip: "Good" }, fact_ids: ["F1", "F3", "S_NY", "S_PA", "X"] });
+eq(cleaned.school_reply, "Okay, we will send it.", "practice citation scrubbed from AI text");
+eq(cleaned.facts.map((f) => f.id).join(","), "F1,S_NY", "practice only allowed fact ids kept");
+for (const [id, sc] of Object.entries(PD.SCENARIOS)) for (const f of sc.facts) eq(f === "STATE" || !!PD.FACTS[f], true, "practice fact exists " + id + " " + f);
+eq(PC.buildParams(PC.parseRequest(okReq)).model, "claude-haiku-5-5", "practice default model");
+eq("temperature" in PC.buildParams(PC.parseRequest(okReq)), false, "practice no sampling params");
+
 console.log("All", n, "checks passed");

@@ -187,3 +187,16 @@ table.log td{height:34px}
 #remind-form{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
 #remind-form input[type=email]{flex:1 1 220px;min-width:0;padding:10px 12px;font:inherit;border:1px solid var(--line,#e5ddd2);border-radius:10px}
 .remind-done{font-weight:700}
+
+/* IEP meeting practice */
+.p-log { list-style: none; padding: 0; margin: 0 0 16px; display: flex; flex-direction: column; gap: 10px; }
+.p-msg, .p-coach { border-radius: 14px; padding: 10px 14px; max-width: 90%; }
+.p-msg p, .p-coach p { margin: 4px 0 0; }
+.p-school { background: var(--warm-soft); align-self: flex-start; }
+.p-parent { background: var(--accent-soft); align-self: flex-end; }
+.p-coach { border: 1px dashed var(--line); align-self: stretch; max-width: 100%; font-size: 15px; }
+.p-who { font-weight: 700; font-size: 13px; color: var(--muted); }
+.p-checks { color: var(--muted); }
+.p-facts { margin: 6px 0 0; padding-left: 18px; font-size: 14px; color: var(--muted); }
+.p-chat textarea { width: 100%; box-sizing: border-box; min-height: 90px; font-family: inherit; font-size: 16px; }
+.p-phrases li { margin-bottom: 8px; font-weight: 600; }

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>IEP Meeting Practice: Rehearse What to Say When the School Pushes Back</title>
+<meta name="description" content="Free practice for parents: an AI plays the school and you practice answering common pushback like &quot;let's wait and see&quot; or &quot;she's passing&quot;, with a tip after each reply.">
+<link rel="canonical" href="https://www.iepdeadlines.com/iep-meeting-practice/">
+<meta property="og:title" content="IEP Meeting Practice: Rehearse What to Say When the School Pushes Back">
+<meta property="og:description" content="Free practice for parents: an AI plays the school and you practice answering common pushback like &quot;let's wait and see&quot; or &quot;she's passing&quot;, with a tip after each reply.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.iepdeadlines.com/iep-meeting-practice/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/style.css">
+<meta name="robots" content="noindex">
+<script defer src="/_vercel/insights/script.js"></script>
+</head>
+<body>
+<header class="site"><div class="wrap">
+<a class="brand" href="/">IEP Timeline Calculator</a>
+<nav><a href="/new-york-iep-timeline-calculator/">New York</a><a href="/pennsylvania-iep-timeline-calculator/">Pennsylvania</a><a href="/california-iep-timeline-calculator/">California</a><a href="/illinois-iep-timeline-calculator/">Illinois</a><a href="/letter-pack/">Letter pack</a><a href="/about/">About</a></nav>
+</div></header>
+<main class="wrap">
+
+<p class="eyebrow">Free practice · CA, NY, PA, IL</p>
+<h1>Practice your IEP meeting before the real one</h1>
+<p class="lead">Pick what the school is likely to say. An AI plays the school staff member, you type what you'd say back, and you get a short tip after each reply. A few rounds of this makes the real meeting a lot less nerve-racking.</p>
+
+<form id="p-setup" class="card">
+<label>Your state <select id="p-state"><option value="NY">New York</option><option value="PA">Pennsylvania</option><option value="IL">Illinois</option><option value="CA">California</option></select></label>
+<label>What the school says <select id="p-scenario"><option value="wait-see">&quot;Let's wait and see&quot;</option><option value="rti-first">&quot;We need to try interventions first&quot;</option><option value="passing">&quot;She's passing, so she won't qualify&quot;</option><option value="plan-504">&quot;Let's just do a 504 plan&quot;</option><option value="no-staff">&quot;We don't have staff for that&quot;</option><option value="late-eval">&quot;The psychologist is backed up&quot;</option></select></label>
+<p class="small">Please don't type your child's name or other real details. What you type is sent to Anthropic (the company that makes the Claude AI) to write the reply. We don't save it. This is practice, not legal advice.</p>
+<div class="actions"><button type="submit">Start practice</button></div>
+</form>
+
+<div id="p-chat" class="card p-chat" hidden aria-live="polite">
+<ol id="p-log" class="p-log"></ol>
+<form id="p-form">
+<label for="p-input">Your reply</label>
+<textarea id="p-input" rows="3" maxlength="600" placeholder="Type what you'd say to the school"></textarea>
+<div class="actions"><button type="submit" id="p-send">Send</button><button type="button" class="ghost" id="p-finish">Finish and get my phrase card</button></div>
+<p class="small" id="p-status" role="status"></p>
+</form>
+</div>
+
+<div id="p-result" class="card" hidden></div>
+
+<h2>Six things schools say, and calm ways to answer</h2>
+<p>You don't have to win the argument in the room. The goal is to stay calm, ask for something specific, and get the answer in writing.</p>
+<h3>"Let's wait and see"</h3>
+<p><strong>What they might say:</strong> "I hear you, and we're watching her closely. Honestly, a lot of kids have a rough fall. Let's see how she does after the holidays and talk again in January."</p>
+<p><strong>A calm reply:</strong> "I understand. I'd still like to request a full evaluation now, and I'm putting it in writing today. Can you tell me who I send it to and when I'll get the consent form?"</p>
+<p class="small">A parent can ask the school for an initial special education evaluation. (<a href="https://www.law.cornell.edu/cfr/text/34/300.301" target="_blank" rel="noopener">34 CFR §300.301(b)</a>)</p>
+<h3>"We need to try interventions first"</h3>
+<p><strong>What they might say:</strong> "Before we go to a full evaluation, our process is to try interventions first. We'll put him in a reading group for 6 to 8 weeks and track his progress."</p>
+<p><strong>A calm reply:</strong> "I'm fine with the reading group, and I'd like the evaluation to happen at the same time. If the school is saying no to the evaluation, can I get that in writing?"</p>
+<p class="small">The U.S. Department of Education says RTI (trying interventions first) can't be used to delay or deny an evaluation. (<a href="https://sites.ed.gov/idea/idea-files/osep-memo-11-07-response-to-intervention-rti-memo/" target="_blank" rel="noopener">OSEP Memo 11-07 (2011)</a>)</p>
+<h3>"She's passing, so she won't qualify"</h3>
+<p><strong>What they might say:</strong> "Her grades are fine. She's passing everything, so to be honest she wouldn't qualify for an IEP anyway."</p>
+<p><strong>A calm reply:</strong> "I'm glad she's passing. Grades are only part of it, and I'm seeing her struggle in other ways. I'd like her evaluated so we know for sure."</p>
+<p class="small">A child can qualify for special education even if they are passing and moving from grade to grade. (<a href="https://www.law.cornell.edu/cfr/text/34/300.101" target="_blank" rel="noopener">34 CFR §300.101(c)(1)</a>)</p>
+<h3>"Let's just do a 504 plan"</h3>
+<p><strong>What they might say:</strong> "I think a 504 plan would cover what he needs. It's quicker, and we can get some accommodations in place right away without all the testing."</p>
+<p><strong>A calm reply:</strong> "A 504 might help in the meantime. I'd still like the special education evaluation, so we can see what she needs before we decide on a plan."</p>
+<p class="small">Schools have a duty to find and evaluate children who may have a disability and need special education (child find). (<a href="https://www.law.cornell.edu/cfr/text/34/300.111" target="_blank" rel="noopener">34 CFR §300.111(a), (c)(1)</a>)</p>
+<h3>"We don't have staff for that"</h3>
+<p><strong>What they might say:</strong> "I understand why you're asking for a one-on-one aide, but we just don't have the staff for that right now. Every classroom is stretched."</p>
+<p><strong>A calm reply:</strong> "I hear that staffing is tight. Can we talk about what he needs first, based on the evaluation? If the answer is no, I'd like that in writing with the reason."</p>
+<p class="small">The IEP has to be based on the child's needs, evaluation results and the parent's concerns. (<a href="https://www.law.cornell.edu/cfr/text/34/300.324" target="_blank" rel="noopener">34 CFR §300.324(a)(1)</a>)</p>
+<h3>"The psychologist is backed up"</h3>
+<p><strong>What they might say:</strong> "We did get your consent form. The problem is our school psychologist is really backed up, so the testing probably won't happen until the spring."</p>
+<p><strong>A calm reply:</strong> "I understand the psychologist is busy. The evaluation still has a deadline. Can you give me the date it will be finished, in writing?"</p>
+<p class="small">The initial evaluation has a deadline: 60 days from consent, or your state's own timeline. (<a href="https://www.law.cornell.edu/cfr/text/34/300.301" target="_blank" rel="noopener">34 CFR §300.301(c)(1)</a>)</p>
+
+<h2>Before the meeting</h2>
+<ul>
+<li>Check your state's dates with the free <a href="/new-york-iep-timeline-calculator/">New York</a>, <a href="/pennsylvania-iep-timeline-calculator/">Pennsylvania</a>, <a href="/illinois-iep-timeline-calculator/">Illinois</a>, <a href="/california-iep-timeline-calculator/">California</a> calculators.</li>
+<li>Bring a short list of what you want to ask for, and write down what they say.</li>
+<li>Your state's free <a href="https://www.parentcenterhub.org/find-your-center/" target="_blank" rel="noopener">Parent Center</a> can help you get ready.</li>
+</ul>
+<p class="small">General information, not legal advice. Last checked November 8, 2026.</p>
+<script src="/practice-data.js"></script><script src="/practice.js"></script>
+
+<section class="signup card no-print" aria-labelledby="signup-h">
+<h2 id="signup-h">Waiting on the school? Get the free checklist</h2>
+<p>10 small things to do while you wait for the evaluation, plus a contact log you can print. We'll email you the link. Now and then we'll also send a short note when we add a state or guide. Unsubscribe anytime.</p>
+<form class="signup-form" action="https://assets.mailerlite.com/jsonp/2778487/forms/203557760520947424/subscribe" method="post">
+<label class="sr" for="signup-email">Your email</label>
+<input id="signup-email" type="email" name="fields[email]" required placeholder="you@example.com" autocomplete="email">
+<input type="hidden" name="ml-submit" value="1"><input type="hidden" name="anticsrf" value="true">
+<button type="submit">Send me the checklist</button>
+</form>
+<p class="signup-done" hidden>Thanks! Here's your checklist: <a href="/checklist/">open it now</a>. A copy is on its way to your inbox.</p>
+<p class="small">We only use your email for this. See our <a href="/privacy/">privacy policy</a>.</p>
+</section>
+<script src="/signup.js" defer></script>
+</main>
+<footer><div class="wrap">
+Estimates only, not legal advice. Deadlines depend on your district's calendar and on facts this tool cannot see. Always confirm with your school district or state education agency. <a href="/about/">Sources and method</a>.
+<br><a href="/terms/">Terms</a> &middot; <a href="/privacy/">Privacy</a> &middot; <a href="/refunds/">Refunds</a>
+</div></footer>
+</body>
+</html>

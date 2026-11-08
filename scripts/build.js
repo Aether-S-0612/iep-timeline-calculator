@@ -754,6 +754,8 @@ function privacyPage() {
 <p>If you buy a product, Lemon Squeezy collects your name, email and payment details to process the order and send your download. We receive your name, email and order details so we can provide support and refunds. We do not receive your full card number. See the <a href="https://www.lemonsqueezy.com/privacy">Lemon Squeezy privacy policy</a>.</p>
 <h2>Email list</h2>
 <p>If you sign up for the free checklist, your email address is stored by our email provider, MailerLite, so we can send it to you and, now and then, tell you about new guides and states. If you ask for a deadline reminder, MailerLite stores your email, your state, and the one date and step you picked, so we can send two emails about that date (3 days before and the day after). Every email has an unsubscribe link. See the <a href="https://www.mailerlite.com/legal/privacy-policy">MailerLite privacy policy</a>.</p>
+<h2>Meeting practice</h2>
+<p>On the <a href="/iep-meeting-practice/">meeting practice</a> page, what you type, plus the state and situation you picked, is sent to Anthropic, the company that makes the Claude AI, so it can write the school's reply and your tip. We don't save the conversation; it stays in your browser tab until you close it. Anthropic may keep API data for a limited time under its own policy and does not use it to train its models by default. See the <a href="https://www.anthropic.com/legal/privacy">Anthropic privacy policy</a>. Please don't type your child's name or other details that could identify them.</p>
 <h2>What we do not do</h2>
 <p>We do not sell personal information, and we do not ask for information about your child's disability or records.</p>
 <h2>Your choices</h2>
@@ -786,6 +788,78 @@ function unlockPage() {
   return layout({ title: "Unlock your letter – " + SITE_NAME, description: "Enter your license key to unlock your follow-up letter and IEP meeting prep.", canonical: "/unlock/", body, head: '<meta name="robots" content="noindex">' });
 }
 
+// IEP meeting practice (AI plays the school). Server: lib/practice-core.js.
+const PRACTICE = require(path.join(ROOT, "src", "practice-data.js"));
+const PRACTICE_SLUG = "iep-meeting-practice";
+// Flip to true once ANTHROPIC_API_KEY is set on the host: adds the page to the sitemap and lets Google index it.
+const PRACTICE_LIVE = false;
+const PRACTICE_REPLIES = {
+  "wait-see": "\"I understand. I'd still like to request a full evaluation now, and I'm putting it in writing today. Can you tell me who I send it to and when I'll get the consent form?\"",
+  "rti-first": "\"I'm fine with the reading group, and I'd like the evaluation to happen at the same time. If the school is saying no to the evaluation, can I get that in writing?\"",
+  passing: "\"I'm glad she's passing. Grades are only part of it, and I'm seeing her struggle in other ways. I'd like her evaluated so we know for sure.\"",
+  "plan-504": "\"A 504 might help in the meantime. I'd still like the special education evaluation, so we can see what she needs before we decide on a plan.\"",
+  "no-staff": "\"I hear that staffing is tight. Can we talk about what he needs first, based on the evaluation? If the answer is no, I'd like that in writing with the reason.\"",
+  "late-eval": "\"I understand the psychologist is busy. The evaluation still has a deadline. Can you give me the date it will be finished, in writing?\"",
+};
+
+function practicePage() {
+  const st = Object.entries(PRACTICE.STATES).map(([c, s]) => `<option value="${c}">${s.name}</option>`).join("");
+  const sc = Object.entries(PRACTICE.SCENARIOS).map(([id, s]) => `<option value="${id}">${s.title.replace(/"/g, "&quot;")}</option>`).join("");
+  const cards = Object.entries(PRACTICE.SCENARIOS)
+    .map(([id, s]) => {
+      const f = PRACTICE.FACTS[s.facts.find((x) => x !== "STATE")];
+      return `<h3>${s.title}</h3>
+<p><strong>What they might say:</strong> "${s.opener}"</p>
+<p><strong>A calm reply:</strong> ${PRACTICE_REPLIES[id]}</p>
+<p class="small">${f.text} (${ext(f.url, f.cite)})</p>`;
+    })
+    .join("\n");
+  const body = `
+<p class="eyebrow">Free practice · CA, NY, PA, IL</p>
+<h1>Practice your IEP meeting before the real one</h1>
+<p class="lead">Pick what the school is likely to say. An AI plays the school staff member, you type what you'd say back, and you get a short tip after each reply. A few rounds of this makes the real meeting a lot less nerve-racking.</p>
+
+<form id="p-setup" class="card">
+<label>Your state <select id="p-state">${st}</select></label>
+<label>What the school says <select id="p-scenario">${sc}</select></label>
+<p class="small">Please don't type your child's name or other real details. What you type is sent to Anthropic (the company that makes the Claude AI) to write the reply. We don't save it. This is practice, not legal advice.</p>
+<div class="actions"><button type="submit">Start practice</button></div>
+</form>
+
+<div id="p-chat" class="card p-chat" hidden aria-live="polite">
+<ol id="p-log" class="p-log"></ol>
+<form id="p-form">
+<label for="p-input">Your reply</label>
+<textarea id="p-input" rows="3" maxlength="${PRACTICE.LIMITS.maxChars}" placeholder="Type what you'd say to the school"></textarea>
+<div class="actions"><button type="submit" id="p-send">Send</button><button type="button" class="ghost" id="p-finish">Finish and get my phrase card</button></div>
+<p class="small" id="p-status" role="status"></p>
+</form>
+</div>
+
+<div id="p-result" class="card" hidden></div>
+
+<h2>Six things schools say, and calm ways to answer</h2>
+<p>You don't have to win the argument in the room. The goal is to stay calm, ask for something specific, and get the answer in writing.</p>
+${cards}
+
+<h2>Before the meeting</h2>
+<ul>
+<li>Check your state's dates with the free ${Object.values(PRACTICE.STATES).map((s) => `<a href="${s.calc}">${s.name}</a>`).join(", ")} calculators.</li>
+<li>Bring a short list of what you want to ask for, and write down what they say.</li>
+<li>Your state's free ${ext("https://www.parentcenterhub.org/find-your-center/", "Parent Center")} can help you get ready.</li>
+</ul>
+<p class="small">General information, not legal advice. Last checked November 8, 2026.</p>
+<script src="/practice-data.js"></script><script src="/practice.js"></script>
+`;
+  return layout({
+    title: "IEP Meeting Practice: Rehearse What to Say When the School Pushes Back",
+    description: "Free practice for parents: an AI plays the school and you practice answering common pushback like \"let's wait and see\" or \"she's passing\", with a tip after each reply.",
+    canonical: `/${PRACTICE_SLUG}/`,
+    body: body + signupBox(),
+    head: PRACTICE_LIVE ? "" : '<meta name="robots" content="noindex">',
+  });
+}
+
 function notFoundPage() {
   const body = `
 <h1>Page not found</h1>
@@ -815,15 +889,16 @@ write("checklist/index.html", checklistPage());
 // Cloudflare Pages serves 404.html for unknown paths (without it, it falls back to the home page).
 write("404.html", notFoundPage());
 write(`${SUSPEND_SLUG}/index.html`, suspendPage());
+write(`${PRACTICE_SLUG}/index.html`, practicePage());
 for (const g of GUIDES) {
   write(`${g.slug}/index.html`, guidePage(g, null));
   for (const c of codes) write(`${g.slug}/${guideStateSlug(c)}/index.html`, guidePage(g, c));
 }
 for (const [code, s] of Object.entries(STATES)) write(`${s.slug}/index.html`, statePage(code, s));
-for (const f of ["calc.js", "letter.js", "app.js", "signup.js", "suspend.js", "suspend-ui.js", "style.css"]) fs.copyFileSync(path.join(ROOT, "src", f), path.join(OUT, f));
+for (const f of ["calc.js", "letter.js", "app.js", "signup.js", "suspend.js", "suspend-ui.js", "practice-data.js", "practice.js", "style.css"]) fs.copyFileSync(path.join(ROOT, "src", f), path.join(OUT, f));
 for (const f of fs.readdirSync(path.join(ROOT, "static"))) fs.copyFileSync(path.join(ROOT, "static", f), path.join(OUT, f));
 
-const urls = ["/", ...GUIDES.flatMap((g) => [`/${g.slug}/`, ...codes.map((c) => `/${g.slug}/${guideStateSlug(c)}/`)]), "/about/", "/terms/", "/privacy/", "/refunds/", ...Object.values(STATES).map((s) => `/${s.slug}/`), "/letter-pack/", `/${SUSPEND_SLUG}/`];
+const urls = ["/", ...GUIDES.flatMap((g) => [`/${g.slug}/`, ...codes.map((c) => `/${g.slug}/${guideStateSlug(c)}/`)]), "/about/", "/terms/", "/privacy/", "/refunds/", ...Object.values(STATES).map((s) => `/${s.slug}/`), "/letter-pack/", `/${SUSPEND_SLUG}/`, ...(PRACTICE_LIVE ? [`/${PRACTICE_SLUG}/`] : [])];
 const today = new Date().toISOString().slice(0, 10);
 write(
   "sitemap.xml",
