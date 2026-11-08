@@ -786,6 +786,17 @@ function unlockPage() {
   return layout({ title: "Unlock your letter – " + SITE_NAME, description: "Enter your license key to unlock your follow-up letter and IEP meeting prep.", canonical: "/unlock/", body, head: '<meta name="robots" content="noindex">' });
 }
 
+function notFoundPage() {
+  const body = `
+<h1>Page not found</h1>
+<p>That page doesn't exist, or it moved. Try the <a href="/">deadline calculator</a> or pick your state:</p>
+<ul>
+${Object.values(STATES).map((s) => `<li><a href="/${s.slug}/">${s.name}</a></li>`).join("\n")}
+</ul>
+`;
+  return layout({ title: "Page not found – " + SITE_NAME, description: "This page doesn't exist.", canonical: "/", body, head: '<meta name="robots" content="noindex">' });
+}
+
 function write(rel, content) {
   const p = path.join(OUT, rel);
   fs.mkdirSync(path.dirname(p), { recursive: true });
@@ -801,6 +812,8 @@ write("refunds/index.html", refundsPage());
 write("unlock/index.html", unlockPage());
 write("letter-pack/index.html", letterPackPage());
 write("checklist/index.html", checklistPage());
+// Cloudflare Pages serves 404.html for unknown paths (without it, it falls back to the home page).
+write("404.html", notFoundPage());
 write(`${SUSPEND_SLUG}/index.html`, suspendPage());
 for (const g of GUIDES) {
   write(`${g.slug}/index.html`, guidePage(g, null));
