@@ -175,7 +175,7 @@ function statePage(code, s) {
   <ul>
     <li><strong>Keep it in writing.</strong> Send requests and questions by email so there's a dated record.</li>
     <li><strong>Ask for the plan.</strong> It's fair to ask the school, "What are the next steps, and when?"</li>
-    <li><strong>If a date passes,</strong> send a short, polite email noting the deadline and asking when it will happen.</li>
+    <li><strong>If a date passes,</strong> send a short, polite email noting the deadline and asking when it will happen. <a href="/school-missed-iep-deadline/">More on what to do</a>.</li>
     <li><strong>School won't evaluate?</strong> <a href="/school-wont-evaluate-my-child/">Here's what you can do</a>.</li>
     <li><strong>You don't have to do this alone.</strong> Every state has a free Parent Training and Information Center. <a href="https://www.parentcenterhub.org/find-your-center/" target="_blank" rel="noopener">Find yours</a>.</li>
   </ul>
@@ -277,7 +277,10 @@ function aboutPage() {
 }
 
 // Guide: what to do when the school won't evaluate. Rules checked against the regulation text on 2026-11-08.
-const GUIDES = [{ slug: "school-wont-evaluate-my-child", title: "The school won't evaluate my child. What now?" }];
+const GUIDES = [
+  { slug: "school-wont-evaluate-my-child", title: "The school won't evaluate my child. What now?", page: () => wontEvaluatePage() },
+  { slug: "school-missed-iep-deadline", title: "The school missed an IEP deadline. What can I do?", page: () => missedDeadlinePage() },
+];
 function wontEvaluatePage() {
   const ny = STATES.NY.slug, pa = STATES.PA.slug, il = STATES.IL.slug;
   const body = `
@@ -339,6 +342,64 @@ Thank you,
     title: "School Won't Evaluate My Child for an IEP? What to Do (NY, PA, IL)",
     description: "What to do when the school won't evaluate your child for special education: how to ask in writing, what the school must send you, and the New York, Pennsylvania and Illinois rules.",
     canonical: "/school-wont-evaluate-my-child/",
+    body,
+  });
+}
+
+function missedDeadlinePage() {
+  const ny = STATES.NY.slug, pa = STATES.PA.slug, il = STATES.IL.slug;
+  const body = `
+<p class="eyebrow">Guide · New York, Pennsylvania, Illinois</p>
+<h1>The school missed an IEP deadline. What can I do?</h1>
+<p class="lead">You signed the consent form, you've been counting the days, and the date came and went. Nobody called. It's frustrating, and it's also common. The good news is there's a calm, step-by-step way to get things moving again, and none of it needs a lawyer.</p>
+
+<h2>1. Check the date first</h2>
+<p>Before you write to anyone, make sure the deadline really passed. Some deadlines count calendar days, some count school days, and some pause over summer break. That's the part people most often get wrong, in both directions.</p>
+<ul>
+<li><strong>New York:</strong> the evaluation is due 60 calendar days after the school gets your consent. <a href="/${ny}/">Check your date</a></li>
+<li><strong>Pennsylvania:</strong> the evaluation report is due 60 calendar days after consent, but summer break days don't count. <a href="/${pa}/">Check your date</a></li>
+<li><strong>Illinois:</strong> the evaluation and the IEP meeting are due within 60 school days, so holidays and breaks push the date out. <a href="/${il}/">Check your date</a></li>
+</ul>
+<p>There are also two federal exceptions where the evaluation clock doesn't apply: if the child repeatedly isn't brought to the evaluation, or if the child moves to a different district partway through (<a href="https://www.law.cornell.edu/cfr/text/34/300.301">34 CFR §300.301(d)</a>).</p>
+
+<h2>2. Send a short, polite email</h2>
+<p>A late evaluation doesn't always mean the school doesn't care. Sometimes it's a scheduling backlog, and a friendly written note is enough to get it moving. Send it to the special education director (in New York, the chairperson of the Committee on Special Education):</p>
+<pre class="sample">Dear [name],
+
+I signed consent for [child's name]'s evaluation on [date]. By my count, the evaluation was due by [date] under [state] rules, and I haven't heard about results yet.
+
+Could you let me know when the evaluation will be finished and when we can meet to go over it?
+
+Thank you,
+[your name]
+[phone]</pre>
+<p>Writing it down matters. If you ever need to take the next step, a dated email is your record.</p>
+
+<h2>3. If a week goes by with no answer</h2>
+<p>Send a second, still polite email to the superintendent, copy the special education director, and mention the date of your first email. Say that you'd like a reply within five school days and that you'd prefer to work this out with the school. You can also call your state's free <a href="https://www.parentcenterhub.org/find-your-center/" target="_blank" rel="noopener">Parent Center</a>, which helps families with exactly this.</p>
+
+<h2>4. If it's still stuck: a state complaint</h2>
+<p>Every state has to take written complaints about special education rules being broken, and it's free (<a href="https://www.law.cornell.edu/cfr/text/34/300.153">34 CFR §300.153</a>). A few things worth knowing:</p>
+<ul>
+<li>The complaint has to be about something that happened <strong>within the last year</strong> (§300.153(c)).</li>
+<li>It needs to say what rule was broken, the facts, what you'd like to happen, and your signature and contact information.</li>
+<li>The state usually has <strong>60 days</strong> to decide (<a href="https://www.law.cornell.edu/cfr/text/34/300.152">§300.152</a>).</li>
+<li>If the state finds your child went without services they should have had, it has to address that, for example with <strong>compensatory services</strong>, meaning extra services to make up for lost time (<a href="https://www.law.cornell.edu/cfr/text/34/300.151">§300.151(b)</a>).</li>
+</ul>
+<p>Where to file: <a href="https://www.nysed.gov/special-education/state-complaint" target="_blank" rel="noopener">New York</a> · <a href="https://www.pa.gov/en/agencies/education/programs-and-services/instruction/elementary-and-secondary-education/special-education/state-complaints-and-dispute-resolution.html" target="_blank" rel="noopener">Pennsylvania</a> · <a href="https://www.isbe.net/Pages/Special-Education-Complaint-Investigation-Process.aspx" target="_blank" rel="noopener">Illinois</a></p>
+
+<h2>A word about how this feels</h2>
+<p>Waiting is exhausting, especially when your child is struggling right now. Following up isn't nagging, and it isn't picking a fight. Deadlines exist so kids don't fall through the cracks, and asking about one is just part of making sure yours doesn't.</p>
+
+<div class="not-alone">
+<p><strong>Want the letters already written?</strong> Each state calculator works out your exact dates for free. If you'd like, for $12 it can also write the follow-up email and the second request with your dates filled in. <a href="/${ny}/">New York</a> · <a href="/${pa}/">Pennsylvania</a> · <a href="/${il}/">Illinois</a></p>
+</div>
+<p class="small">General information, not legal advice. Rules checked against the regulation text in November 2026.</p>
+`;
+  return layout({
+    title: "School Missed the IEP Deadline? What Parents Can Do (NY, PA, IL)",
+    description: "What to do when the school misses an IEP evaluation or meeting deadline: check the date, a sample follow-up email, the next step, and how a state complaint works.",
+    canonical: "/school-missed-iep-deadline/",
     body,
   });
 }
@@ -424,7 +485,7 @@ write("terms/index.html", termsPage());
 write("privacy/index.html", privacyPage());
 write("refunds/index.html", refundsPage());
 write("unlock/index.html", unlockPage());
-write("school-wont-evaluate-my-child/index.html", wontEvaluatePage());
+for (const g of GUIDES) write(`${g.slug}/index.html`, g.page());
 for (const [code, s] of Object.entries(STATES)) write(`${s.slug}/index.html`, statePage(code, s));
 for (const f of ["calc.js", "letter.js", "app.js", "style.css"]) fs.copyFileSync(path.join(ROOT, "src", f), path.join(OUT, f));
 for (const f of fs.readdirSync(path.join(ROOT, "static"))) fs.copyFileSync(path.join(ROOT, "static", f), path.join(OUT, f));
