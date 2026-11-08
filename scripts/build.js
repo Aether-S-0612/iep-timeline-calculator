@@ -176,6 +176,7 @@ function statePage(code, s) {
     <li><strong>Keep it in writing.</strong> Send requests and questions by email so there's a dated record.</li>
     <li><strong>Ask for the plan.</strong> It's fair to ask the school, "What are the next steps, and when?"</li>
     <li><strong>If a date passes,</strong> send a short, polite email noting the deadline and asking when it will happen.</li>
+    <li><strong>School won't evaluate?</strong> <a href="/school-wont-evaluate-my-child/">Here's what you can do</a>.</li>
     <li><strong>You don't have to do this alone.</strong> Every state has a free Parent Training and Information Center. <a href="https://www.parentcenterhub.org/find-your-center/" target="_blank" rel="noopener">Find yours</a>.</li>
   </ul>
   <div class="not-alone">
@@ -232,6 +233,8 @@ ${Object.values(STATES)
 <p>Parents who want to know when the school has to finish an evaluation or hold the IEP meeting, and case managers, school psychologists and special education teachers who track many students' deadlines.</p>
 <h2>Why a calculator?</h2>
 <p>Some deadlines are counted in calendar days and others in school days, and some states pause the clock over summer. Counting school days by hand around holidays and breaks is easy to get wrong. This calculator applies each state's rule to the calendar you enter and shows the regulation for every date so you can check it.</p>
+<h2>Guides</h2>
+<ul>${GUIDES.map((g) => `<li><a href="/${g.slug}/">${esc(g.title)}</a></li>`).join("")}</ul>
 <p class="notice">More states are coming soon.</p>
 `;
   return layout({
@@ -269,6 +272,73 @@ function aboutPage() {
     title: "About the IEP Timeline Calculator – Method, Sources and Limits",
     description: "How the IEP Timeline Calculator counts calendar days and school days, the regulations it uses for each state, and its limits.",
     canonical: "/about/",
+    body,
+  });
+}
+
+// Guide: what to do when the school won't evaluate. Rules checked against the regulation text on 2026-11-08.
+const GUIDES = [{ slug: "school-wont-evaluate-my-child", title: "The school won't evaluate my child. What now?" }];
+function wontEvaluatePage() {
+  const ny = STATES.NY.slug, pa = STATES.PA.slug, il = STATES.IL.slug;
+  const body = `
+<p class="eyebrow">Guide · New York, Pennsylvania, Illinois</p>
+<h1>The school won't evaluate my child. What now?</h1>
+<p class="lead">Maybe they said "let's wait and see." Maybe they said your child is doing fine, or that they need to try more interventions first. If you think your child needs help, you're allowed to ask for a special education evaluation, and the school has to give you a real answer. Here's how that works.</p>
+
+<h2>1. Put the request in writing</h2>
+<p>A hallway chat or a phone call is easy to lose. Send a short email to the special education director (in New York, the chairperson of the Committee on Special Education). Keep a copy. Something like this is enough:</p>
+<pre class="sample">Dear [name],
+
+I am requesting a full evaluation for special education for my child, [child's name], [grade], at [school], in all areas of suspected disability. I am also requesting an evaluation under Section 504.
+
+I'm concerned about [one or two sentences: what you see at home or what teachers have told you].
+
+Please send me the consent form, or if the district decides not to evaluate, a written notice explaining why.
+
+Thank you,
+[your name]
+[phone]</pre>
+<p>Federal law says a parent can ask for an initial evaluation at any time (<a href="https://www.law.cornell.edu/cfr/text/34/300.301">34 CFR §300.301(b)</a>).</p>
+
+<h2>2. The school has two choices, and both come in writing</h2>
+<p>After your request, the school either asks for your consent to evaluate, or tells you no. If it says no, it has to give you <strong>prior written notice</strong>: what it refused, why, and what it looked at to decide (<a href="https://www.law.cornell.edu/cfr/text/34/300.503">34 CFR §300.503</a>). A shrug in a meeting isn't that.</p>
+<p>One thing schools sometimes say is that your child has to go through RTI or MTSS (extra help in general education) first. The U.S. Department of Education has said those programs can't be used to delay or deny an evaluation when a disability is suspected (OSEP Memo 11-07, 2011). Your child can get extra help and be evaluated at the same time.</p>
+
+<h2>3. What your state adds</h2>
+<h3>New York</h3>
+<p>Send the referral in writing to the chairperson of the Committee on Special Education. The chairperson has to notify you right away and ask for your consent (<a href="https://www.law.cornell.edu/regulations/new-york/8-NYCRR-200.4">8 NYCRR §200.4(a)</a>).</p>
+<p>The building principal may ask to meet with you to talk about other supports instead. That's allowed, but the referral is only withdrawn if <strong>you agree in writing</strong> (§200.4(a)(9)). If you still want the evaluation, don't sign anything that says the referral is withdrawn. Once you give consent, the evaluation has to be done within 60 calendar days.</p>
+<p><a href="/${ny}/">See your New York dates →</a></p>
+
+<h3>Pennsylvania</h3>
+<p>Pennsylvania wants the request in writing, and schools have to keep the <strong>Permission to Evaluate</strong> form easy to get. If you asked out loud, to a teacher, counselor or principal, that person has to get you a copy of the form within 10 calendar days (<a href="https://www.law.cornell.edu/regulations/pennsylvania/22-Pa-Code-SS-14-123">22 Pa. Code §14.123(c)</a>).</p>
+<p>If the school decides not to evaluate, you should get that decision on a NOREP (Notice of Recommended Educational Placement) or other written notice. Once you sign consent, the evaluation report is due within 60 calendar days, not counting summer break.</p>
+<p><a href="/${pa}/">See your Pennsylvania dates →</a></p>
+
+<h3>Illinois</h3>
+<p>Illinois gives the district <strong>14 school days</strong> after your request to decide whether an evaluation is needed. If it decides no, it has to send you written notice (<a href="https://www.law.cornell.edu/regulations/illinois/Ill-Admin-Code-tit-23-SS-226.110">23 Ill. Adm. Code §226.110(c)(3)</a>). If it decides yes and you consent, the evaluation, the eligibility meeting and the IEP meeting all have to happen within 60 school days.</p>
+<p><a href="/${il}/">See your Illinois dates →</a></p>
+
+<h2>4. If the answer is still no</h2>
+<ul>
+<li><strong>Call your state's free Parent Center.</strong> Helping parents with exactly this is their job. <a href="https://www.parentcenterhub.org/find-your-center/" target="_blank" rel="noopener">Find yours</a>.</li>
+<li><strong>Ask about mediation.</strong> It's free, voluntary for both sides, and often faster than anything else.</li>
+<li><strong>File a state complaint.</strong> It's free and you don't need a lawyer (<a href="https://www.law.cornell.edu/cfr/text/34/300.153">34 CFR §300.153</a>). <a href="https://www.nysed.gov/special-education/state-complaint" target="_blank" rel="noopener">New York</a> · <a href="https://www.pa.gov/en/agencies/education/programs-and-services/instruction/elementary-and-secondary-education/special-education/state-complaints-and-dispute-resolution.html" target="_blank" rel="noopener">Pennsylvania</a> · <a href="https://www.isbe.net/Pages/Special-Education-Complaint-Investigation-Process.aspx" target="_blank" rel="noopener">Illinois</a></li>
+<li><strong>Due process</strong> is the formal hearing route. It's more involved, so most families talk to the Parent Center or an advocate first.</li>
+</ul>
+
+<h2>A word about how this feels</h2>
+<p>Hearing "no" about your own kid is hard, and it's easy to feel like you're being difficult. You aren't. Asking in writing, staying polite and keeping copies is how this process is supposed to work. Most of the time a clear written request is what moves things forward.</p>
+
+<div class="not-alone">
+<p><strong>Already signed consent?</strong> The clock is running. Pick your state to see the exact date each step is due, with the rule behind it: <a href="/${ny}/">New York</a> · <a href="/${pa}/">Pennsylvania</a> · <a href="/${il}/">Illinois</a>.</p>
+</div>
+<p class="small">General information, not legal advice. Rules checked against the regulation text in November 2026.</p>
+`;
+  return layout({
+    title: "School Won't Evaluate My Child for an IEP? What to Do (NY, PA, IL)",
+    description: "What to do when the school won't evaluate your child for special education: how to ask in writing, what the school must send you, and the New York, Pennsylvania and Illinois rules.",
+    canonical: "/school-wont-evaluate-my-child/",
     body,
   });
 }
@@ -354,11 +424,12 @@ write("terms/index.html", termsPage());
 write("privacy/index.html", privacyPage());
 write("refunds/index.html", refundsPage());
 write("unlock/index.html", unlockPage());
+write("school-wont-evaluate-my-child/index.html", wontEvaluatePage());
 for (const [code, s] of Object.entries(STATES)) write(`${s.slug}/index.html`, statePage(code, s));
 for (const f of ["calc.js", "letter.js", "app.js", "style.css"]) fs.copyFileSync(path.join(ROOT, "src", f), path.join(OUT, f));
 for (const f of fs.readdirSync(path.join(ROOT, "static"))) fs.copyFileSync(path.join(ROOT, "static", f), path.join(OUT, f));
 
-const urls = ["/", "/about/", "/terms/", "/privacy/", "/refunds/", ...Object.values(STATES).map((s) => `/${s.slug}/`)];
+const urls = ["/", ...GUIDES.map((g) => `/${g.slug}/`), "/about/", "/terms/", "/privacy/", "/refunds/", ...Object.values(STATES).map((s) => `/${s.slug}/`)];
 const today = new Date().toISOString().slice(0, 10);
 write(
   "sitemap.xml",
