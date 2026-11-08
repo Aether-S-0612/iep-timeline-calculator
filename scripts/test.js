@@ -108,4 +108,10 @@ a = SC.assess({ state: "NY", days: [6] });
 eq(a.rows.some((r) => /3214/.test(r.cite)), true, "NY over 5 days hearing note");
 eq(SC.assess({ state: "PA", days: [5, 5] }).rows[0].title, "The next day out is day 11", "suspend exactly 10");
 
+const CAc = require("../src/states.js").CA;
+const caRun = (c) => C.compute("CA", { consent: c, years: CAc.years, closures: CAc.closures }).find((r) => r.key === "iep").date;
+eq(caRun("2026-10-01"), "2026-11-30", "CA 60 days, 5-day Thanksgiving week still counts");
+eq(caRun("2026-12-01"), "2027-02-22", "CA winter break over 5 school days is skipped");
+eq(caRun("2027-05-20"), "2027-09-10", "CA consent within 30 days of year end: 30 days into next year");
+
 console.log("All", n, "checks passed");

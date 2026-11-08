@@ -261,6 +261,7 @@ function aboutPage() {
 <li><a href="https://www.law.cornell.edu/regulations/new-york/8-NYCRR-200.4">New York: 8 NYCRR §200.4</a></li>
 <li><a href="https://www.law.cornell.edu/regulations/pennsylvania/22-Pa-Code-SS-14-123">Pennsylvania: 22 Pa. Code §14.123</a>, <a href="https://www.law.cornell.edu/regulations/pennsylvania/22-Pa-Code-SS-14-124">§14.124</a>, <a href="https://www.law.cornell.edu/regulations/pennsylvania/22-Pa-Code-SS-14-131">§14.131</a></li>
 <li><a href="https://www.law.cornell.edu/regulations/illinois/Ill-Admin-Code-tit-23-SS-226.110">Illinois: 23 Ill. Adm. Code §226.110</a></li>
+<li><a href="https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=EDC&sectionNum=56043">California: Cal. Educ. Code §56043</a>, <a href="https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=EDC&sectionNum=56344">§56344</a></li>
 <li>Federal: <a href="https://www.law.cornell.edu/cfr/text/34/300.303">34 CFR §300.303</a>, <a href="https://www.law.cornell.edu/cfr/text/34/300.323">§300.323</a>, <a href="https://www.law.cornell.edu/cfr/text/34/300.324">§300.324</a></li>
 </ul>
 <h2>Limits</h2>
@@ -305,6 +306,14 @@ const STATE_GUIDE = {
     evalRule: "the evaluation and the IEP meeting are due within 60 school days, so holidays and breaks push the date out",
     refuse: `<p>Illinois gives the district <strong>14 school days</strong> after your request to decide whether an evaluation is needed. If it decides no, it has to send you written notice (<a href="https://www.law.cornell.edu/regulations/illinois/Ill-Admin-Code-tit-23-SS-226.110">23 Ill. Adm. Code §226.110(c)(3)</a>). If it decides yes and you consent, the evaluation, the eligibility meeting and the IEP meeting all have to happen within 60 school days.</p>`,
   },
+  CA: {
+    to: "the special education director",
+    complaint: "https://www.cde.ca.gov/sp/se/qa/cmplntproc.asp",
+    agency: "the California Department of Education (CDE)",
+    evalRule: "the assessment and the IEP meeting are due 60 calendar days after consent, but summer and school breaks longer than 5 school days don't count",
+    refuse: `<p>In California, once you make a written referral, the district has 15 calendar days to send you a proposed <strong>assessment plan</strong> (breaks longer than 5 school days don't count). You then get at least 15 days to look it over before you sign (<a href="https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=EDC&sectionNum=56043">Cal. Educ. Code §56043(a), (b)</a>; §56321).</p>
+<p>If the district decides not to assess, it has to tell you in writing and explain why. Once you sign the assessment plan, the assessment and the IEP meeting are due within 60 calendar days, not counting summer or long breaks.</p>`,
+  },
 };
 const codes = Object.keys(STATE_GUIDE);
 const calcLinks = () => codes.map((c) => `<a href="/${STATES[c].slug}/">${STATES[c].name}</a>`).join(" · ");
@@ -316,8 +325,8 @@ const GUIDES = [
     title: "The school won't evaluate my child. What now?",
     stateTitle: (n) => `School Won't Evaluate My Child in ${n}? What Parents Can Do`,
     stateDesc: (n) => `What to do when a ${n} school won't evaluate your child for special education: how to ask in writing, what the school must send you, and the ${n} rules.`,
-    allTitle: "School Won't Evaluate My Child for an IEP? What to Do (NY, PA, IL)",
-    allDesc: "What to do when the school won't evaluate your child for special education: how to ask in writing, what the school must send you, and the New York, Pennsylvania and Illinois rules.",
+    allTitle: "School Won't Evaluate My Child for an IEP? What to Do (CA, NY, PA, IL)",
+    allDesc: "What to do when the school won't evaluate your child for special education: how to ask in writing, what the school must send you, and the California, New York, Pennsylvania and Illinois rules.",
     body: wontEvaluateBody,
   },
   {
@@ -325,7 +334,7 @@ const GUIDES = [
     title: "The school missed an IEP deadline. What can I do?",
     stateTitle: (n) => `School Missed the IEP Deadline in ${n}? What Parents Can Do`,
     stateDesc: (n) => `What to do when a ${n} school misses an IEP evaluation or meeting deadline: check the date, a sample follow-up email, the next step, and how to file a state complaint in ${n}.`,
-    allTitle: "School Missed the IEP Deadline? What Parents Can Do (NY, PA, IL)",
+    allTitle: "School Missed the IEP Deadline? What Parents Can Do (CA, NY, PA, IL)",
     allDesc: "What to do when the school misses an IEP evaluation or meeting deadline: check the date, a sample follow-up email, the next step, and how a state complaint works.",
     body: missedDeadlineBody,
   },
@@ -334,8 +343,8 @@ const GUIDES = [
     title: "Your first IEP meeting: what happens and what you can ask for",
     stateTitle: (n) => `First IEP Meeting in ${n}: What to Expect and Your Rights as a Parent`,
     stateDesc: (n) => `What happens at a first IEP meeting in ${n}: who will be there, what you're entitled to before and after, and the ${n} rules that change the timing.`,
-    allTitle: "First IEP Meeting: What to Expect and Your Rights as a Parent (NY, PA, IL)",
-    allDesc: "What happens at a first IEP meeting: who has to be there, what you can ask for before the meeting, why you don't have to sign at the table, and the New York, Pennsylvania and Illinois rules.",
+    allTitle: "First IEP Meeting: What to Expect and Your Rights as a Parent (CA, NY, PA, IL)",
+    allDesc: "What happens at a first IEP meeting: who has to be there, what you can ask for before the meeting, why you don't have to sign at the table, and the California, New York, Pennsylvania and Illinois rules.",
     body: firstMeetingBody,
   },
 ];
@@ -381,7 +390,7 @@ function wontEvaluateBody(code, switcher) {
   const n = code && STATES[code].name;
   const to = code ? STATE_GUIDE[code].to : "the special education director (in New York, the chairperson of the Committee on Special Education)";
   return `
-<p class="eyebrow">Guide · ${code ? n : "New York, Pennsylvania, Illinois"}</p>
+<p class="eyebrow">Guide · ${code ? n : "California, New York, Pennsylvania, Illinois"}</p>
 <h1>${code ? `The school won't evaluate my child in ${n}. What now?` : "The school won't evaluate my child. What now?"}</h1>
 ${switcher}
 <p class="lead">Maybe they said "let's wait and see." Maybe they said your child is doing fine, or that they need to try more interventions first. If you think your child needs help, you're allowed to ask for a special education evaluation, and the school has to give you a real answer. Here's how that works${code ? ` in ${n}` : ""}.</p>
@@ -431,6 +440,7 @@ ${list
 const FIRST_MEETING_STATE = {
   NY: `<p>In New York the team is called the <strong>Committee on Special Education (CSE)</strong>, and it includes a school psychologist. You can also ask for an <strong>additional parent member</strong>, a parent of another child with a disability, to join. Put the request in writing at least 72 hours before the meeting (<a href="https://www.law.cornell.edu/regulations/new-york/8-NYCRR-200.3">8 NYCRR §200.3(a)(1)(viii)</a>).</p>`,
   PA: `<p>In Pennsylvania you should get the <strong>Evaluation Report</strong> at least 10 school days before the meeting, so you have time to read it (<a href="https://www.law.cornell.edu/regulations/pennsylvania/22-Pa-Code-SS-14-123">22 Pa. Code §14.123(d)</a>). The IEP meeting has to happen within 30 calendar days of the report. After the meeting, the school sends a <strong>NOREP</strong> (Notice of Recommended Educational Placement). That's the form where you agree or disagree, and you can take it home before you sign.</p>`,
+  CA: `<p>In California the school has to give you your child's records within 5 business days of your request, and before the IEP meeting (<a href="https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=EDC&sectionNum=56504">Cal. Educ. Code §56504</a>). Ask for the assessment reports that way. You can also audio-record the IEP meeting if you tell the school at least 24 hours ahead (§56341.1(g)). The meeting itself is due within 60 calendar days of your consent, not counting summer or breaks longer than 5 school days.</p>`,
   IL: `<p>In Illinois the school has to give you notice of the meeting at least 10 days ahead (you can waive that in writing), and send you copies of the written materials the team will consider, such as evaluations and data, at least 3 school days before the meeting (<a href="https://www.law.cornell.edu/regulations/illinois/Ill-Admin-Code-tit-23-SS-226.530">23 Ill. Adm. Code §226.530</a>; 105 ILCS 5/14-8.02f(c)). In Illinois the first IEP meeting falls inside the same 60-school-day window as the evaluation.</p>`,
 };
 
@@ -438,7 +448,7 @@ function firstMeetingBody(code, switcher) {
   const list = code ? [code] : codes;
   const n = code && STATES[code].name;
   return `
-<p class="eyebrow">Guide · ${code ? n : "New York, Pennsylvania, Illinois"}</p>
+<p class="eyebrow">Guide · ${code ? n : "California, New York, Pennsylvania, Illinois"}</p>
 <h1>${code ? `Your first IEP meeting in ${n}: what happens and what you can ask for` : "Your first IEP meeting: what happens and what you can ask for"}</h1>
 ${switcher}
 <p class="lead">The evaluation is done and the school wants to meet. A lot of parents walk into that first meeting not knowing who will be there, what will be decided, or whether they're supposed to sign something on the spot. Here's what to expect, and what you're allowed to ask for.</p>
@@ -481,7 +491,7 @@ function missedDeadlineBody(code, switcher) {
   const n = code && STATES[code].name;
   const to = code ? STATE_GUIDE[code].to : "the special education director (in New York, the chairperson of the Committee on Special Education)";
   return `
-<p class="eyebrow">Guide · ${code ? n : "New York, Pennsylvania, Illinois"}</p>
+<p class="eyebrow">Guide · ${code ? n : "California, New York, Pennsylvania, Illinois"}</p>
 <h1>${code ? `The school missed an IEP deadline in ${n}. What can I do?` : "The school missed an IEP deadline. What can I do?"}</h1>
 ${switcher}
 <p class="lead">You signed the consent form, you've been counting the days, and the date came and went. Nobody called. It's frustrating, and it's also common. The good news is there's a calm, step-by-step way to get things moving again, and none of it needs a lawyer.</p>
@@ -558,7 +568,7 @@ function letterPackPage() {
 
 <h2>Questions</h2>
 <details><summary>What's free and what's paid?</summary><p>The calculator, every date and rule, and the first half of each letter are free. The ${PAYWALL.price} unlocks the full letters, one-click sending, the meeting prep and the glossary.</p></details>
-<details><summary>Which states does it cover?</summary><p>New York, Pennsylvania and Illinois, for school-age children (not Early Intervention or preschool).</p></details>
+<details><summary>Which states does it cover?</summary><p>California, New York, Pennsylvania and Illinois, for school-age children (not Early Intervention or preschool).</p></details>
 <details><summary>Is this legal advice?</summary><p>No. It's general information and letter templates based on the published rules. For advice about your child's situation, your state's free Parent Center is a great place to start.</p></details>
 <details><summary>Is it a subscription?</summary><p>No. One payment, and the pack stays unlocked in your browser. Your license key in the receipt email unlocks it on another device.</p></details>
 <details><summary>What if it doesn't help?</summary><p>Ask within 14 days for a full refund, no explanation needed. See the <a href="/refunds/">refund policy</a>.</p></details>
@@ -587,7 +597,7 @@ function suspendPage() {
   ];
   const faqLd = { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: faq.map(([q, a]) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } })) };
   const body = `
-<p class="eyebrow">Free calculator · NY, PA, IL</p>
+<p class="eyebrow">Free calculator · CA, NY, PA, IL</p>
 <h1>IEP suspension calculator: has my child hit the 10-day rule?</h1>
 <p class="lead">If your child keeps getting sent home, the days add up faster than you think. Once suspensions pass 10 school days in a school year, the school has to follow extra rules. Add up your child's days below to see where you stand.</p>
 
@@ -631,7 +641,7 @@ ${faq.map(([q, a]) => `<details><summary>${q}</summary><p>${a}</p></details>`).j
 <script src="/calc.js"></script><script src="/suspend.js"></script><script src="/suspend-ui.js"></script>
 `;
   return layout({
-    title: "IEP Suspension Calculator: The 10-Day Rule for Students With Disabilities (NY, PA, IL)",
+    title: "IEP Suspension Calculator: The 10-Day Rule for Students With Disabilities (CA, NY, PA, IL)",
     description: "Add up your child's suspensions to see if they've passed the 10-day rule, when the school must provide services, and when a manifestation determination review is due.",
     canonical: `/${SUSPEND_SLUG}/`,
     body: body + signupBox(),

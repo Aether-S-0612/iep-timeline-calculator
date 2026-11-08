@@ -105,6 +105,57 @@ module.exports = {
     ],
   },
 
+  CA: {
+    name: "California",
+    slug: "california-iep-timeline-calculator",
+    lastChecked: "2026-11-08",
+    years: [
+      { first: "2026-08-12", last: "2027-06-09" },
+      { first: "2027-08-11", last: "2028-06-08" },
+    ],
+    closures: `# Example closures - replace with your district calendar
+2026-09-07  # Labor Day
+2026-11-11  # Veterans Day
+2026-11-23 to 2026-11-27  # Thanksgiving week
+2026-12-21 to 2027-01-08  # Winter break
+2027-01-18  # MLK Day
+2027-02-15  # Presidents' Day
+2027-03-29 to 2027-04-02  # Spring break
+2027-05-31  # Memorial Day
+2027-09-06  # Labor Day
+2027-11-11  # Veterans Day
+2027-11-22 to 2027-11-26  # Thanksgiving week
+2027-12-20 to 2028-01-07  # Winter break
+2028-01-17  # MLK Day
+2028-02-21  # Presidents' Day
+2028-03-27 to 2028-03-31  # Spring break
+2028-05-29  # Memorial Day`,
+    intro:
+      "California counts calendar days, but with a twist: summer and any school break longer than 5 school days don't count. So a 3-week winter break pauses the clock, while a single holiday or a 5-day Thanksgiving week doesn't. Enter the date the school received your signed assessment plan and this calculator works it out.",
+    rules: [
+      ["Assessment plan sent to you", "15 calendar days after the referral (breaks longer than 5 school days don't count)", "Cal. Educ. Code §56043(a), §56321(a)"],
+      ["Time for you to consider the plan", "At least 15 calendar days", "Cal. Educ. Code §56043(b)"],
+      ["Assessment done and IEP meeting held", "60 calendar days after consent, not counting summer or breaks longer than 5 school days", "Cal. Educ. Code §56043(c), §56344(a)"],
+      ["Consent 30 days or fewer before the school year ends", "Within 30 days after the next school year starts", "Cal. Educ. Code §56344(a)"],
+      ["Your child's records", "Within 5 business days of your request, and before any IEP meeting", "Cal. Educ. Code §56043(n), §56504"],
+      ["IEP meeting you ask for in writing", "Within 30 days (breaks longer than 5 school days don't count)", "Cal. Educ. Code §56043(l), §56343.5"],
+      ["Reevaluation", "At least every 3 years", "Cal. Educ. Code §56043(k)"],
+    ],
+    faq: [
+      [
+        "How long does a California school have to hold the IEP meeting after an assessment?",
+        "60 calendar days from the date the school receives your written consent to the assessment plan, not counting days between school years or school breaks longer than 5 school days (Cal. Educ. Code §56043(c), §56344(a)).",
+      ],
+      [
+        "Does winter break count toward the 60 days in California?",
+        "Not if it's longer than 5 school days. A typical 2 to 3 week winter break pauses the clock. A single holiday, or a break of 5 school days or fewer, still counts.",
+      ],
+      [
+        "How fast does the school have to send me an assessment plan?",
+        "Within 15 calendar days of the referral, not counting breaks longer than 5 school days. If the referral comes 10 days or fewer before the end of the school year, the plan is due within the first 10 days of the next school year.",
+      ],
+    ],
+  },
   IL: {
     name: "Illinois",
     slug: "illinois-iep-timeline-calculator",

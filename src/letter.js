@@ -6,12 +6,14 @@
     NY: { eval: "the initial evaluation", iep: "the Committee on Special Education (CSE) recommendation and the arrangement of services" },
     PA: { eval: "the Evaluation Report (ER)", iep: "the IEP meeting", impl: "the start of IEP services" },
     IL: { iep: "the evaluation, the eligibility decision and the IEP meeting" },
+    CA: { iep: "the IEP meeting to review the assessment" },
   };
   // Shown after the main request. Only rules already verified for the calculator are cited.
   const STATE_EXTRA = {
     NY: "Please also send me copies of the evaluation reports before the CSE meeting, so I have time to read them and prepare questions.",
     PA: "Please also send me the Evaluation Report at least 10 school days before the IEP meeting, as 22 Pa. Code §14.123(d) requires, unless I agree otherwise in writing.",
     IL: "Please also send me copies of the evaluation reports before the meeting, so I have time to read them and prepare questions.",
+    CA: "Please also send me copies of my child's records, including the assessment reports, before the IEP meeting. California asks schools to provide records within 5 business days of a request (Cal. Educ. Code §56504).",
   };
   const ACTIVE = ["eval", "iep", "impl"];
 
@@ -32,6 +34,7 @@
     NY: { agency: "New York State Education Department (NYSED)", url: "https://www.nysed.gov/special-education/state-complaint" },
     PA: { agency: "Pennsylvania Department of Education, Bureau of Special Education", url: "https://www.pa.gov/en/agencies/education/programs-and-services/instruction/elementary-and-secondary-education/special-education/state-complaints-and-dispute-resolution.html" },
     IL: { agency: "Illinois State Board of Education (ISBE)", url: "https://www.isbe.net/Pages/Special-Education-Complaint-Investigation-Process.aspx" },
+    CA: { agency: "California Department of Education (CDE)", url: "https://www.cde.ca.gov/sp/se/qa/cmplntproc.asp" },
   };
 
   // One line per letter on why it's safe to send. Parents are often afraid of "making trouble".
@@ -181,6 +184,7 @@
     PA: "Pennsylvania requires the school to give you the Evaluation Report at least 10 school days before the IEP meeting, unless you waive this in writing (22 Pa. Code §14.123(d)). If it hasn't arrived, ask for it now.",
     NY: "Ask for copies of every evaluation report at least a week before the CSE meeting, so you are not reading them for the first time at the table.",
     IL: "Ask for copies of every evaluation report at least a week before the eligibility and IEP meeting, so you are not reading them for the first time at the table.",
+    CA: "In California the school has to give you your child's records, including assessment reports, within 5 business days of your request and before the IEP meeting (Cal. Educ. Code §56504). Ask now so you can read them at home.",
   };
   function buildPrepPack(code, child) {
     child = (child || "").trim() || "your child";
@@ -272,6 +276,10 @@
       ["NOREP", "Notice of Recommended Educational Placement. The Pennsylvania form where you approve, or disagree with, what the school proposes."],
     ],
     IL: [["Eligibility meeting", "The meeting where the team decides, from the evaluation, whether your child qualifies for special education."]],
+    CA: [
+      ["Assessment plan", "The form that lists which tests the school wants to give your child. Nothing starts until you sign it."],
+      ["SELPA", "Special Education Local Plan Area. The group of districts your school belongs to for special education. It has its own procedures and a parent contact."],
+    ],
   };
   function buildGlossary(code) {
     return [

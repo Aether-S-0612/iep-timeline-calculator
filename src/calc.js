@@ -96,6 +96,35 @@
     return false;
   }
 
+  // California: count calendar days but skip summer and any break longer than 5 school days
+  // (a run of non-school days, weekends included, that holds more than 5 weekdays).
+  function inLongBreak(cal, s) {
+    if (isSummer(cal, s)) return true;
+    if (isSchoolDay(cal, s)) return false;
+    let a = s, b = s;
+    while (!isSchoolDay(cal, addDays(a, -1)) && !isSummer(cal, addDays(a, -1)) && a > addDays(s, -60)) a = addDays(a, -1);
+    while (!isSchoolDay(cal, addDays(b, 1)) && !isSummer(cal, addDays(b, 1)) && b < addDays(s, 60)) b = addDays(b, 1);
+    let weekdays = 0;
+    for (let d = a; d <= b; d = addDays(d, 1)) if (weekday(d) !== 0 && weekday(d) !== 6) weekdays++;
+    return weekdays > 5;
+  }
+  function addCalendarDaysSkippingLongBreaks(cal, s, n) {
+    let d = s;
+    let count = 0;
+    const limit = addDays(s, 3 * 366);
+    while (count < n) {
+      d = addDays(d, 1);
+      if (d > limit) return null;
+      if (inLongBreak(cal, d)) continue;
+      count++;
+    }
+    return d;
+  }
+  function currentLastDay(cal, s) {
+    const y = cal.years.find((y) => s >= y.first && s <= y.last);
+    return y ? y.last : null;
+  }
+
   function makeCal(opts) {
     const years = (opts.years || []).filter((y) => y.first && y.last).sort((a, b) => (a.first < b.first ? -1 : 1));
     return { years, closures: parseClosures(opts.closures) };
@@ -211,7 +240,42 @@
         reevalYears: 3,
       });
     },
+
+    CA: function (input, cal) {
+      const c = input.consent;
+      const rows = [];
+      const last = currentLastDay(cal, c);
+      let due, basis;
+      if (last && daysBetweenISO(c, last) <= 30) {
+        const nf = nextFirstDay(cal, c);
+        due = nf ? addDays(nf, 30) : null;
+        basis = "Consent came 30 days or fewer before the end of the school year, so the meeting must be held within 30 days after the next school year starts";
+      } else {
+        due = addCalendarDaysSkippingLongBreaks(cal, c, 60);
+        basis = "60 calendar days after the school receives written consent, not counting summer or school breaks longer than 5 school days";
+      }
+      rows.push({
+        key: "iep",
+        label: "Assessment done and IEP meeting held",
+        date: due,
+        basis,
+        cite: "Cal. Educ. Code §56043(c), §56344(a)",
+        citeUrl: "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=EDC&sectionNum=56344",
+        note: "Services start as soon as possible after you consent to the IEP (§56043(i)).",
+      });
+      return finishRows(rows, input, due, {
+        annualCite: "Cal. Educ. Code §56043(d)",
+        annualUrl: "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=EDC&sectionNum=56043",
+        reevalCite: "Cal. Educ. Code §56043(k)",
+        reevalUrl: "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=EDC&sectionNum=56043",
+        reevalYears: 3,
+      });
+    },
   };
+
+  function daysBetweenISO(a, b) {
+    return Math.round((parse(b) - parse(a)) / DAY);
+  }
 
   function finishRows(rows, input, projectedIep, r) {
     const base = input.iepDate || projectedIep;
