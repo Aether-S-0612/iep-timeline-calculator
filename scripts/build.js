@@ -41,7 +41,7 @@ ${head}
 <body>
 <header class="site"><div class="wrap">
 <a class="brand" href="/">${SITE_NAME}</a>
-<nav>${Object.values(STATES).map((s) => `<a href="/${s.slug}/">${s.name}</a>`).join("")}<a href="/about/">About</a></nav>
+<nav>${Object.values(STATES).map((s) => `<a href="/${s.slug}/">${s.name}</a>`).join("")}<a href="/letter-pack/">Letter pack</a><a href="/about/">About</a></nav>
 </div></header>
 <main class="wrap">
 ${body}
@@ -148,7 +148,7 @@ function statePage(code, s) {
           <li>Plain-English glossary, and what to do if the school stops answering</li>
         </ul>
         <a class="button" id="buy" href="#">Unlock for <span class="price"></span></a>
-        <p class="small">One-time payment. 14-day money-back guarantee.</p>
+        <p class="small">One-time payment. 14-day money-back guarantee. <a href="/letter-pack/">What's inside</a></p>
         <details class="have-key">
           <summary>Already bought? Enter your key</summary>
           <form class="key-form" data-unlock>
@@ -453,6 +453,52 @@ Thank you,
 `;
 }
 
+function letterPackPage() {
+  const body = `
+<p class="eyebrow">Letter pack · ${PAYWALL.price}, one time</p>
+<h1>The letters to the school, already written with your dates</h1>
+<p class="lead">Knowing the deadline is one thing. Writing to the school about it, without sounding angry or getting the date wrong, is the part most parents put off. This pack writes those emails for you, with your child's dates and your state's rules already filled in.</p>
+<p><strong>Pick your state to start:</strong> ${calcLinks()}. Enter your consent date, and the letter appears right under your timeline. The first half is free to read.</p>
+
+<h2>What's in it</h2>
+<div class="pack-grid">
+<div class="card"><h3>4 letters, one for each stage</h3>
+<ul>
+<li><strong>Confirm the dates.</strong> A friendly note right after consent, so everyone works from the same deadline.</li>
+<li><strong>A date has passed.</strong> A polite follow-up that names the rule and asks when it will happen.</li>
+<li><strong>Still no reply.</strong> A second request to the superintendent, with the date of your first email.</li>
+<li><strong>After the meeting.</strong> A short summary of what was agreed, so it's in writing.</li>
+</ul></div>
+<div class="card"><h3>Sent from your own email</h3>
+<p>One click opens the letter in Gmail or your usual mail app, ready to send. It goes from you, so the dated record is in your own sent folder. We never send anything for you.</p></div>
+<div class="card"><h3>IEP meeting prep</h3>
+<p>What to bring, questions to ask, what to do the night before, and a few calm phrases for when the meeting moves too fast.</p></div>
+<div class="card"><h3>Plain-English help</h3>
+<p>The words you'll hear in the meeting, explained, and what to do step by step if the school stops answering.</p></div>
+</div>
+
+<h2>Why each letter says it the way it does</h2>
+<p>Every letter is polite on purpose. It names the date and the regulation, asks one clear question, and leaves room for the school to fix it, which makes it easy for them to answer. Under each letter you'll see a one-line note on why it's safe to send.</p>
+
+<h2>Questions</h2>
+<details><summary>What's free and what's paid?</summary><p>The calculator, every date and rule, and the first half of each letter are free. The ${PAYWALL.price} unlocks the full letters, one-click sending, the meeting prep and the glossary.</p></details>
+<details><summary>Which states does it cover?</summary><p>New York, Pennsylvania and Illinois, for school-age children (not Early Intervention or preschool).</p></details>
+<details><summary>Is this legal advice?</summary><p>No. It's general information and letter templates based on the published rules. For advice about your child's situation, your state's free Parent Center is a great place to start.</p></details>
+<details><summary>Is it a subscription?</summary><p>No. One payment, and the pack stays unlocked in your browser. Your license key in the receipt email unlocks it on another device.</p></details>
+<details><summary>What if it doesn't help?</summary><p>Ask within 14 days for a full refund, no explanation needed. See the <a href="/refunds/">refund policy</a>.</p></details>
+
+<div class="not-alone">
+<p><strong>Start with your dates:</strong> ${calcLinks()}</p>
+</div>
+`;
+  return layout({
+    title: "IEP Letter Pack – Follow-Up Emails to the School With Your Dates Filled In",
+    description: "Four ready-to-send letters to the school (confirm dates, overdue, second request, meeting summary) with your state's deadlines filled in, plus IEP meeting prep. One-time payment.",
+    canonical: "/letter-pack/",
+    body,
+  });
+}
+
 // Contact address shown on the legal pages. Empty = point buyers to their receipt email.
 const CONTACT_EMAIL = process.env.CONTACT_EMAIL || "iepdeadlines@gmail.com";
 const UPDATED = "November 4, 2026";
@@ -534,6 +580,7 @@ write("terms/index.html", termsPage());
 write("privacy/index.html", privacyPage());
 write("refunds/index.html", refundsPage());
 write("unlock/index.html", unlockPage());
+write("letter-pack/index.html", letterPackPage());
 for (const g of GUIDES) {
   write(`${g.slug}/index.html`, guidePage(g, null));
   for (const c of codes) write(`${g.slug}/${guideStateSlug(c)}/index.html`, guidePage(g, c));
@@ -542,7 +589,7 @@ for (const [code, s] of Object.entries(STATES)) write(`${s.slug}/index.html`, st
 for (const f of ["calc.js", "letter.js", "app.js", "style.css"]) fs.copyFileSync(path.join(ROOT, "src", f), path.join(OUT, f));
 for (const f of fs.readdirSync(path.join(ROOT, "static"))) fs.copyFileSync(path.join(ROOT, "static", f), path.join(OUT, f));
 
-const urls = ["/", ...GUIDES.flatMap((g) => [`/${g.slug}/`, ...codes.map((c) => `/${g.slug}/${guideStateSlug(c)}/`)]), "/about/", "/terms/", "/privacy/", "/refunds/", ...Object.values(STATES).map((s) => `/${s.slug}/`)];
+const urls = ["/", ...GUIDES.flatMap((g) => [`/${g.slug}/`, ...codes.map((c) => `/${g.slug}/${guideStateSlug(c)}/`)]), "/about/", "/terms/", "/privacy/", "/refunds/", ...Object.values(STATES).map((s) => `/${s.slug}/`), "/letter-pack/"];
 const today = new Date().toISOString().slice(0, 10);
 write(
   "sitemap.xml",
