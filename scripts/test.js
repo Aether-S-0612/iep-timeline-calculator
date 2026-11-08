@@ -92,4 +92,20 @@ const P = Lt.buildPrepPack("IL", "Maya").map((x) => x.title);
 eq(P.includes("The night before") && P.includes("Words that help when you feel rushed") && P.includes("If the school stops answering"), true, "prep pack sections");
 eq(Lt.buildGlossary("PA").some(([w]) => w === "NOREP"), true, "PA glossary has NOREP");
 
+const SC = require("../src/suspend.js");
+let a = SC.assess({ state: "NY", days: [3, 2] });
+eq(a.total + "|" + a.placement, "5|no", "suspend under 10 is not change of placement");
+a = SC.assess({ state: "NY", days: [4, 3, 4] });
+eq(a.placement, "maybe", "suspend 11 days total is maybe pattern");
+eq(a.rows[0].title, "The school must provide services now", "suspend services after 10");
+a = SC.assess({ state: "IL", days: [12] });
+eq(a.placement + "|" + a.rows.some((r) => /Illinois/.test(r.title)), "yes|true", "suspend single >10 is change of placement; IL meeting");
+a = SC.assess({ state: "PA", days: [6, 5, 5] });
+eq(a.placement, "yes", "PA over 15 cumulative is change of placement");
+a = SC.assess({ state: "PA", days: [1], intellectual: true });
+eq(a.placement, "yes", "PA intellectual disability any removal");
+a = SC.assess({ state: "NY", days: [6] });
+eq(a.rows.some((r) => /3214/.test(r.cite)), true, "NY over 5 days hearing note");
+eq(SC.assess({ state: "PA", days: [5, 5] }).rows[0].title, "The next day out is day 11", "suspend exactly 10");
+
 console.log("All", n, "checks passed");

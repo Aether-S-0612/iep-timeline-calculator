@@ -234,7 +234,7 @@ ${Object.values(STATES)
 <h2>Why a calculator?</h2>
 <p>Some deadlines are counted in calendar days and others in school days, and some states pause the clock over summer. Counting school days by hand around holidays and breaks is easy to get wrong. This calculator applies each state's rule to the calendar you enter and shows the regulation for every date so you can check it.</p>
 <h2>Guides</h2>
-<ul>${GUIDES.map((g) => `<li><a href="/${g.slug}/">${esc(g.title)}</a></li>`).join("")}</ul>
+<ul>${GUIDES.map((g) => `<li><a href="/${g.slug}/">${esc(g.title)}</a></li>`).join("")}<li><a href="/${SUSPEND_SLUG}/">Suspension calculator: has my child hit the 10-day rule?</a></li></ul>
 <p class="notice">More states are coming soon.</p>
 `;
   return layout({
@@ -518,6 +518,70 @@ function letterPackPage() {
   });
 }
 
+// 10-day suspension rule calculator.
+const SUSPEND_SLUG = "iep-suspension-10-day-rule-calculator";
+function suspendPage() {
+  const cfgJson = JSON.stringify(Object.fromEntries(Object.entries(STATES).map(([c, s]) => [c, { name: s.name, years: s.years, closures: s.closures }]))).replace(/</g, "\\u003c");
+  const faq = [
+    ["Does in-school suspension count toward the 10 days?", "Usually it does, unless your child still gets their IEP services, keeps working in the general curriculum, and stays with non-disabled classmates to the same extent as before. Ask the school how they are counting it."],
+    ["Do partial days count?", "A removal for part of the school day, such as being sent home early, can count toward the total. Keep a note of the date and time each time it happens."],
+    ["What if the school calls it something else, like a 'cooling off' day at home?", "If your child is kept out of school for behavior, it can still be a removal even if the school doesn't call it a suspension. Write down each date."],
+    ["Is this legal advice?", "No. It's general information based on the published rules. Your state's free Parent Center can help with your child's situation."],
+  ];
+  const faqLd = { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: faq.map(([q, a]) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } })) };
+  const body = `
+<p class="eyebrow">Free calculator · NY, PA, IL</p>
+<h1>IEP suspension calculator: has my child hit the 10-day rule?</h1>
+<p class="lead">If your child keeps getting sent home, the days add up faster than you think. Once suspensions pass 10 school days in a school year, the school has to follow extra rules. Add up your child's days below to see where you stand.</p>
+
+<form id="s-form" class="card" onsubmit="return false">
+<label>State <select id="s-state">${Object.entries(STATES).map(([c, s]) => `<option value="${c}">${s.name}</option>`).join("")}</select></label>
+<p class="small">Enter each suspension this school year, in school days. Count in-school suspensions and early pick-ups for behavior too.</p>
+<ol id="s-list" class="s-list"></ol>
+<button type="button" class="ghost" id="s-add">+ Add another suspension</button>
+<p id="s-id-wrap" hidden><label><input type="checkbox" id="s-id"> My child is identified with an intellectual disability</label></p>
+<label>Date the school decided on the latest suspension (optional) <input type="date" id="s-decision"></label>
+</form>
+<div id="s-out" class="s-out" aria-live="polite"></div>
+
+<h2>How the 10-day rule works</h2>
+<ul>
+<li><strong>Up to 10 school days a year,</strong> a school can suspend a child with an IEP the same way it would any other student.</li>
+<li><strong>From the 11th day,</strong> the school has to keep providing services during any suspension, so your child doesn't fall behind on IEP goals (34 CFR §300.530(b), (d)).</li>
+<li><strong>A change of placement</strong> happens when one suspension is longer than 10 school days in a row, or when a series of suspensions adds up to more than 10 days and forms a pattern (34 CFR §300.536).</li>
+<li><strong>Within 10 school days</strong> of deciding on a change of placement, the school has to hold a manifestation determination review with you (34 CFR §300.530(e)).</li>
+</ul>
+
+<h2>What each state adds</h2>
+<ul>
+<li><strong>Pennsylvania:</strong> more than 15 school days in a year is automatically a change of placement, and for a student with an intellectual disability, any removal is (22 Pa. Code §14.143).</li>
+<li><strong>Illinois:</strong> after 10 school days in a year, the district holds an IEP meeting to review or write a behavior plan (23 Ill. Adm. Code §226.400).</li>
+<li><strong>New York:</strong> the manifestation review should happen immediately if possible (8 NYCRR §201.4), and no student can be suspended more than 5 school days without a fair hearing (Educ. Law §3214(3)(c)).</li>
+</ul>
+
+<h2>What you can do now</h2>
+<ol>
+<li><strong>Write down every day out.</strong> Date, how long, and what the school said happened. Early pick-ups count.</li>
+<li><strong>Ask the school, in writing, how many days they have on record.</strong> Their count and yours should match.</li>
+<li><strong>Ask for a behavior plan</strong> if your child doesn't have one, or a review if the current one isn't working.</li>
+<li><strong>Call your state's free ${ext("https://www.parentcenterhub.org/find-your-center/", "Parent Center")}</strong> if a long suspension or expulsion is on the table.</li>
+</ol>
+
+<h2>Questions</h2>
+${faq.map(([q, a]) => `<details><summary>${q}</summary><p>${a}</p></details>`).join("\n")}
+<p class="small">Estimates based on the published rules, not legal advice. Last checked November 8, 2026.</p>
+<script>window.SUSPEND_CFG=${cfgJson};</script>
+<script src="/calc.js"></script><script src="/suspend.js"></script><script src="/suspend-ui.js"></script>
+`;
+  return layout({
+    title: "IEP Suspension Calculator: The 10-Day Rule for Students With Disabilities (NY, PA, IL)",
+    description: "Add up your child's suspensions to see if they've passed the 10-day rule, when the school must provide services, and when a manifestation determination review is due.",
+    canonical: `/${SUSPEND_SLUG}/`,
+    body: body + signupBox(),
+    head: `<script type="application/ld+json">${JSON.stringify(faqLd)}</script>`,
+  });
+}
+
 // Free lead magnet, sent by the MailerLite welcome email. noindex and not in the sitemap.
 function checklistPage() {
   const rows = Array.from({ length: 8 }, () => "<tr><td></td><td></td><td></td><td></td></tr>").join("");
@@ -651,15 +715,16 @@ write("refunds/index.html", refundsPage());
 write("unlock/index.html", unlockPage());
 write("letter-pack/index.html", letterPackPage());
 write("checklist/index.html", checklistPage());
+write(`${SUSPEND_SLUG}/index.html`, suspendPage());
 for (const g of GUIDES) {
   write(`${g.slug}/index.html`, guidePage(g, null));
   for (const c of codes) write(`${g.slug}/${guideStateSlug(c)}/index.html`, guidePage(g, c));
 }
 for (const [code, s] of Object.entries(STATES)) write(`${s.slug}/index.html`, statePage(code, s));
-for (const f of ["calc.js", "letter.js", "app.js", "signup.js", "style.css"]) fs.copyFileSync(path.join(ROOT, "src", f), path.join(OUT, f));
+for (const f of ["calc.js", "letter.js", "app.js", "signup.js", "suspend.js", "suspend-ui.js", "style.css"]) fs.copyFileSync(path.join(ROOT, "src", f), path.join(OUT, f));
 for (const f of fs.readdirSync(path.join(ROOT, "static"))) fs.copyFileSync(path.join(ROOT, "static", f), path.join(OUT, f));
 
-const urls = ["/", ...GUIDES.flatMap((g) => [`/${g.slug}/`, ...codes.map((c) => `/${g.slug}/${guideStateSlug(c)}/`)]), "/about/", "/terms/", "/privacy/", "/refunds/", ...Object.values(STATES).map((s) => `/${s.slug}/`), "/letter-pack/"];
+const urls = ["/", ...GUIDES.flatMap((g) => [`/${g.slug}/`, ...codes.map((c) => `/${g.slug}/${guideStateSlug(c)}/`)]), "/about/", "/terms/", "/privacy/", "/refunds/", ...Object.values(STATES).map((s) => `/${s.slug}/`), "/letter-pack/", `/${SUSPEND_SLUG}/`];
 const today = new Date().toISOString().slice(0, 10);
 write(
   "sitemap.xml",

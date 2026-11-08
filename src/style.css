@@ -169,3 +169,16 @@ table.log td{height:34px}
 .signup-form input[type=email]{flex:1 1 220px;min-width:0;padding:10px 12px;font:inherit;border:1px solid var(--line,#e5ddd2);border-radius:10px}
 .signup-done{font-weight:700}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.s-list{padding-left:0;list-style:none;margin:8px 0}
+.s-list li{margin:6px 0}
+.s-list input{width:5em;padding:6px 8px;font:inherit}
+#s-form select,#s-form input[type=date]{padding:6px 8px;font:inherit;margin-left:6px}
+.s-out{margin:16px 0}
+.s-total{font-size:18px}
+.s-row{border-left:4px solid var(--line,#e5ddd2);padding:8px 14px;margin:12px 0;background:var(--card,#fff);border-radius:8px}
+.s-row h3{margin:0 0 4px}
+.s-row p{margin:4px 0}
+.s-warn{border-left-color:#c2410c}
+.s-maybe{border-left-color:#d97706}
+.s-ok{border-left-color:#15803d}
+.s-info{border-left-color:#2c7a6b}
