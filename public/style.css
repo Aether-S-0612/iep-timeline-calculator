@@ -158,3 +158,14 @@ pre.sample { white-space: pre-wrap; font-family: inherit; background: var(--card
 .pack-grid .card h3 { margin-top: 0; }
 main > details { border-top: 1px solid var(--line); padding: 10px 0; }
 main > details summary { cursor: pointer; font-weight: 700; }
+ol.checklist li{margin-bottom:10px}
+table.log{width:100%;border-collapse:collapse;margin:8px 0 16px}
+table.log th,table.log td{border:1px solid var(--line,#e5ddd2);padding:8px;text-align:left;font-size:14px}
+table.log td{height:34px}
+@media print{header.site,footer,.no-print{display:none}}
+.signup{margin:28px 0}
+.signup h2{margin-top:0}
+.signup-form{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+.signup-form input[type=email]{flex:1 1 220px;min-width:0;padding:10px 12px;font:inherit;border:1px solid var(--line,#e5ddd2);border-radius:10px}
+.signup-done{font-weight:700}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}

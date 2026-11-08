@@ -213,7 +213,7 @@ ${s.faq.map(([q, a]) => `<h3>${esc(q)}</h3><p>${esc(a)}</p>`).join("\n")}
     title,
     description,
     canonical: `/${s.slug}/`,
-    body,
+    body: body + signupBox(),
     head: `<script type="application/ld+json">${JSON.stringify(appLd)}</script>\n<script type="application/ld+json">${JSON.stringify(faqLd)}</script>`,
   });
 }
@@ -338,13 +338,32 @@ function stateSwitcher(g, code) {
     .join(" · ")}${code ? ` · <a href="/${g.slug}/">All states</a>` : ""}</p>`;
 }
 
+// Email signup (MailerLite form "Site checklist signup" -> group "Waiting checklist" -> welcome automation).
+const SIGNUP_URL = "https://assets.mailerlite.com/jsonp/2778487/forms/203557760520947424/subscribe";
+function signupBox() {
+  return `
+<section class="signup card no-print" aria-labelledby="signup-h">
+<h2 id="signup-h">Waiting on the school? Get the free checklist</h2>
+<p>10 small things to do while you wait for the evaluation, plus a contact log you can print. We'll email you the link. Now and then we'll also send a short note when we add a state or guide. Unsubscribe anytime.</p>
+<form class="signup-form" action="${SIGNUP_URL}" method="post">
+<label class="sr" for="signup-email">Your email</label>
+<input id="signup-email" type="email" name="fields[email]" required placeholder="you@example.com" autocomplete="email">
+<input type="hidden" name="ml-submit" value="1"><input type="hidden" name="anticsrf" value="true">
+<button type="submit">Send me the checklist</button>
+</form>
+<p class="signup-done" hidden>Thanks! Here's your checklist: <a href="/checklist/">open it now</a>. A copy is on its way to your inbox.</p>
+<p class="small">We only use your email for this. See our <a href="/privacy/">privacy policy</a>.</p>
+</section>
+<script src="/signup.js" defer></script>`;
+}
+
 function guidePage(g, code) {
   const n = code ? STATES[code].name : null;
   return layout({
     title: code ? g.stateTitle(n) : g.allTitle,
     description: code ? g.stateDesc(n) : g.allDesc,
     canonical: code ? `/${g.slug}/${guideStateSlug(code)}/` : `/${g.slug}/`,
-    body: g.body(code, stateSwitcher(g, code)),
+    body: g.body(code, stateSwitcher(g, code)) + signupBox(),
   });
 }
 
@@ -499,6 +518,54 @@ function letterPackPage() {
   });
 }
 
+// Free lead magnet, sent by the MailerLite welcome email. noindex and not in the sitemap.
+function checklistPage() {
+  const rows = Array.from({ length: 8 }, () => "<tr><td></td><td></td><td></td><td></td></tr>").join("");
+  const body = `
+<p class="eyebrow">Free checklist</p>
+<h1>While you wait for the evaluation: a 10-step checklist</h1>
+<p class="lead">The weeks between "yes, we'll evaluate" and the first meeting can feel like nothing is happening. Here's what you can quietly do in that time, so you walk into the meeting with a clear record and fewer surprises.</p>
+<p class="no-print"><button type="button" class="ghost" onclick="window.print()">Print this checklist</button></p>
+
+<h2>Keep a paper trail</h2>
+<ol class="checklist">
+<li><strong>Put the request in writing.</strong> If you only asked out loud or on the phone, send a short email that repeats it and gives the date you first asked. A dated email is the easiest record to point back to.</li>
+<li><strong>Write down the consent date.</strong> Most deadlines are counted from the day the school gets your signed consent. Ask for a copy of the signed form if you don't have one.</li>
+<li><strong>Put the deadline on your calendar.</strong> ${calcLinks()} will work it out with school breaks counted, and can add it to your phone calendar.</li>
+<li><strong>Keep one folder for everything.</strong> Emails, letters, report cards, notes home. One email label or one paper folder is enough.</li>
+<li><strong>Log every call and meeting.</strong> Date, who you spoke to, and what they said, in a line or two. There's a blank log at the bottom of this page.</li>
+</ol>
+
+<h2>Get ready for the meeting</h2>
+<ol class="checklist" start="6">
+<li><strong>Ask for your child's school records.</strong> You have the right to see them. The school has to provide them without unnecessary delay, before any IEP meeting, and no later than 45 days after you ask (34 CFR §300.613).</li>
+<li><strong>Collect outside reports.</strong> Letters or evaluations from doctors, therapists or tutors. If you share a private evaluation that meets the district's criteria, the school has to consider it (34 CFR §300.502(c)).</li>
+<li><strong>Write down examples while they're fresh.</strong> What homework looks like, what teachers have told you, what your child says about school. Short notes with dates are more useful than a long summary later.</li>
+<li><strong>Ask when you'll get the evaluation report.</strong> Reading it before the meeting, not at the table, makes a big difference.</li>
+</ol>
+
+<h2>If things stall</h2>
+<ol class="checklist" start="10">
+<li><strong>If a date passes, send one polite email.</strong> Name the date, ask when it will happen, and keep it short. Here's <a href="/school-missed-iep-deadline/">what to do when the school misses a deadline</a>, and every state has a free ${ext("https://www.parentcenterhub.org/find-your-center/", "Parent Center")} that can help.</li>
+</ol>
+
+<h2>Contact log</h2>
+<table class="log"><thead><tr><th>Date</th><th>Who</th><th>Call / email / meeting</th><th>What was said</th></tr></thead><tbody>${rows}</tbody></table>
+
+<div class="not-alone no-print">
+<p>Want the emails to the school written for you, with your dates filled in? See the <a href="/letter-pack/">letter pack</a>.</p>
+</div>
+<p class="small">General information, not legal advice.</p>
+`;
+  return layout({
+    title: "While You Wait for the Evaluation: 10-Step Checklist – " + SITE_NAME,
+    description: "A free 10-step checklist for parents waiting on a special education evaluation, with a printable contact log.",
+    canonical: "/checklist/",
+    body,
+    head: '<meta name="robots" content="noindex">',
+  });
+}
+
 // Contact address shown on the legal pages. Empty = point buyers to their receipt email.
 const CONTACT_EMAIL = process.env.CONTACT_EMAIL || "iepdeadlines@gmail.com";
 const UPDATED = "November 4, 2026";
@@ -535,6 +602,8 @@ function privacyPage() {
 <p>The site is hosted on Vercel, which keeps standard server logs (such as IP address and pages requested) for security and operations. Fonts are loaded from Google Fonts, which receives your IP address when the page loads.</p>
 <h2>Purchases</h2>
 <p>If you buy a product, Lemon Squeezy collects your name, email and payment details to process the order and send your download. We receive your name, email and order details so we can provide support and refunds. We do not receive your full card number. See the <a href="https://www.lemonsqueezy.com/privacy">Lemon Squeezy privacy policy</a>.</p>
+<h2>Email list</h2>
+<p>If you sign up for the free checklist, your email address is stored by our email provider, MailerLite, so we can send it to you and, now and then, tell you about new guides and states. Every email has an unsubscribe link. See the <a href="https://www.mailerlite.com/legal/privacy-policy">MailerLite privacy policy</a>.</p>
 <h2>What we do not do</h2>
 <p>We do not sell personal information, and we do not ask for information about your child's disability or records.</p>
 <h2>Your choices</h2>
@@ -581,12 +650,13 @@ write("privacy/index.html", privacyPage());
 write("refunds/index.html", refundsPage());
 write("unlock/index.html", unlockPage());
 write("letter-pack/index.html", letterPackPage());
+write("checklist/index.html", checklistPage());
 for (const g of GUIDES) {
   write(`${g.slug}/index.html`, guidePage(g, null));
   for (const c of codes) write(`${g.slug}/${guideStateSlug(c)}/index.html`, guidePage(g, c));
 }
 for (const [code, s] of Object.entries(STATES)) write(`${s.slug}/index.html`, statePage(code, s));
-for (const f of ["calc.js", "letter.js", "app.js", "style.css"]) fs.copyFileSync(path.join(ROOT, "src", f), path.join(OUT, f));
+for (const f of ["calc.js", "letter.js", "app.js", "signup.js", "style.css"]) fs.copyFileSync(path.join(ROOT, "src", f), path.join(OUT, f));
 for (const f of fs.readdirSync(path.join(ROOT, "static"))) fs.copyFileSync(path.join(ROOT, "static", f), path.join(OUT, f));
 
 const urls = ["/", ...GUIDES.flatMap((g) => [`/${g.slug}/`, ...codes.map((c) => `/${g.slug}/${guideStateSlug(c)}/`)]), "/about/", "/terms/", "/privacy/", "/refunds/", ...Object.values(STATES).map((s) => `/${s.slug}/`), "/letter-pack/"];
