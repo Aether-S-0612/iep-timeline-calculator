@@ -61,6 +61,21 @@
     <button type="button" id="print" class="ghost">Print or save as PDF</button>
   </div>
   <p class="small">Calendar reminders arrive 7 days before each date, so nothing sneaks up on you.</p>
+  <div id="remind" class="remind no-print" hidden>
+    <h3>Rather get an email?</h3>
+    <p>We'll email you 3 days before <strong id="remind-what"></strong>, and once more the day after, in case nothing happened. Just those two emails about this date.</p>
+    <form id="remind-form" action="https://assets.mailerlite.com/jsonp/2778487/forms/203576072075216199/subscribe" method="post">
+      <label class="sr" for="remind-email">Your email</label>
+      <input id="remind-email" type="email" name="fields[email]" required placeholder="you@example.com" autocomplete="email">
+      <input type="hidden" name="fields[iep_deadline]" id="remind-date">
+      <input type="hidden" name="fields[deadline_step]" id="remind-step">
+      <input type="hidden" name="fields[state]" id="remind-state">
+      <input type="hidden" name="ml-submit" value="1"><input type="hidden" name="anticsrf" value="true">
+      <button type="submit">Remind me</button>
+    </form>
+    <p class="remind-done" hidden></p>
+    <p class="small">Your email goes to our email provider (MailerLite) only for this. See our <a href="/privacy/">privacy policy</a>.</p>
+  </div>
 </section>
 
 <section id="letter" class="card letter" hidden>

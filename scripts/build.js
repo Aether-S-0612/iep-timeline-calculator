@@ -110,6 +110,21 @@ function statePage(code, s) {
     <button type="button" id="print" class="ghost">Print or save as PDF</button>
   </div>
   <p class="small">Calendar reminders arrive 7 days before each date, so nothing sneaks up on you.</p>
+  <div id="remind" class="remind no-print" hidden>
+    <h3>Rather get an email?</h3>
+    <p>We'll email you 3 days before <strong id="remind-what"></strong>, and once more the day after, in case nothing happened. Just those two emails about this date.</p>
+    <form id="remind-form" action="${REMIND_URL}" method="post">
+      <label class="sr" for="remind-email">Your email</label>
+      <input id="remind-email" type="email" name="fields[email]" required placeholder="you@example.com" autocomplete="email">
+      <input type="hidden" name="fields[iep_deadline]" id="remind-date">
+      <input type="hidden" name="fields[deadline_step]" id="remind-step">
+      <input type="hidden" name="fields[state]" id="remind-state">
+      <input type="hidden" name="ml-submit" value="1"><input type="hidden" name="anticsrf" value="true">
+      <button type="submit">Remind me</button>
+    </form>
+    <p class="remind-done" hidden></p>
+    <p class="small">Your email goes to our email provider (MailerLite) only for this. See our <a href="/privacy/">privacy policy</a>.</p>
+  </div>
 </section>
 
 <section id="letter" class="card letter" hidden>
@@ -355,6 +370,10 @@ function stateSwitcher(g, code) {
     .map((c) => (c === code ? `<strong>${STATES[c].name}</strong>` : `<a href="/${g.slug}/${guideStateSlug(c)}/">${STATES[c].name}</a>`))
     .join(" · ")}${code ? ` · <a href="/${g.slug}/">All states</a>` : ""}</p>`;
 }
+
+// Deadline reminder (MailerLite form "Deadline reminder signup" -> group "Deadline reminders" ->
+// automation "Deadline reminder": exact date trigger 3 days before fields.iep_deadline, then the day after).
+const REMIND_URL = "https://assets.mailerlite.com/jsonp/2778487/forms/203576072075216199/subscribe";
 
 // Email signup (MailerLite form "Site checklist signup" -> group "Waiting checklist" -> welcome automation).
 const SIGNUP_URL = "https://assets.mailerlite.com/jsonp/2778487/forms/203557760520947424/subscribe";
@@ -734,7 +753,7 @@ function privacyPage() {
 <h2>Purchases</h2>
 <p>If you buy a product, Lemon Squeezy collects your name, email and payment details to process the order and send your download. We receive your name, email and order details so we can provide support and refunds. We do not receive your full card number. See the <a href="https://www.lemonsqueezy.com/privacy">Lemon Squeezy privacy policy</a>.</p>
 <h2>Email list</h2>
-<p>If you sign up for the free checklist, your email address is stored by our email provider, MailerLite, so we can send it to you and, now and then, tell you about new guides and states. Every email has an unsubscribe link. See the <a href="https://www.mailerlite.com/legal/privacy-policy">MailerLite privacy policy</a>.</p>
+<p>If you sign up for the free checklist, your email address is stored by our email provider, MailerLite, so we can send it to you and, now and then, tell you about new guides and states. If you ask for a deadline reminder, MailerLite stores your email, your state, and the one date and step you picked, so we can send two emails about that date (3 days before and the day after). Every email has an unsubscribe link. See the <a href="https://www.mailerlite.com/legal/privacy-policy">MailerLite privacy policy</a>.</p>
 <h2>What we do not do</h2>
 <p>We do not sell personal information, and we do not ask for information about your child's disability or records.</p>
 <h2>Your choices</h2>

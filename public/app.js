@@ -119,9 +119,45 @@
       })
       .join("");
     renderProgress(t);
+    renderRemind(t);
     out.hidden = false;
     renderLetter(input, t);
   }
+
+  // Email reminder for the next date that is still at least 3 days away
+  // (MailerLite sends it 3 days before, so anything sooner would never fire).
+  function renderRemind(t) {
+    const box = $("remind");
+    if (!box) return;
+    const next = lastRows.find((r) => r.date && daysFrom(t, r.date) >= 3);
+    if (!next) { box.hidden = true; return; }
+    const nice = new Date(Date.UTC(+next.date.slice(0, 4), +next.date.slice(5, 7) - 1, +next.date.slice(8, 10)))
+      .toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric", timeZone: "UTC" });
+    $("remind-what").textContent = '"' + next.label + '" (due ' + nice + ")";
+    $("remind-date").value = next.date;
+    $("remind-step").value = 'Your date: "' + next.label + '" in ' + cfg.name + ", due " + nice;
+    $("remind-state").value = cfg.name;
+    box.hidden = false;
+  }
+  const rf = $("remind-form");
+  if (rf) rf.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const btn = rf.querySelector("button");
+    const done = document.querySelector(".remind-done");
+    const what = $("remind-what").textContent;
+    btn.disabled = true;
+    btn.textContent = "Sending...";
+    fetch(rf.action, { method: "POST", body: new FormData(rf) })
+      .then((r) => r.json())
+      .then((d) => {
+        if (!d || !d.success) throw new Error("not ok");
+        done.textContent = "Done. We'll email you 3 days before " + what + ". If you don't see it, check your spam folder.";
+      })
+      .catch(() => {
+        done.textContent = "Sorry, that didn't go through on our side. The calendar button above still works.";
+      })
+      .then(() => { rf.hidden = true; done.hidden = false; });
+  });
 
   // "Where am I?" map: consent is done; the first step whose date hasn't come yet is "you are here".
   const SHORT = { eval: "Evaluation", iep: "IEP meeting", impl: "Services start" };

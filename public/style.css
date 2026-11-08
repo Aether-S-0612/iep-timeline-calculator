@@ -182,3 +182,8 @@ table.log td{height:34px}
 .s-maybe{border-left-color:#d97706}
 .s-ok{border-left-color:#15803d}
 .s-info{border-left-color:#2c7a6b}
+.remind{margin-top:18px;padding-top:14px;border-top:1px solid var(--line,#e5ddd2)}
+.remind h3{margin:0 0 6px}
+#remind-form{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+#remind-form input[type=email]{flex:1 1 220px;min-width:0;padding:10px 12px;font:inherit;border:1px solid var(--line,#e5ddd2);border-radius:10px}
+.remind-done{font-weight:700}
