@@ -329,6 +329,15 @@ const GUIDES = [
     allDesc: "What to do when the school misses an IEP evaluation or meeting deadline: check the date, a sample follow-up email, the next step, and how a state complaint works.",
     body: missedDeadlineBody,
   },
+  {
+    slug: "first-iep-meeting",
+    title: "Your first IEP meeting: what happens and what you can ask for",
+    stateTitle: (n) => `First IEP Meeting in ${n}: What to Expect and Your Rights as a Parent`,
+    stateDesc: (n) => `What happens at a first IEP meeting in ${n}: who will be there, what you're entitled to before and after, and the ${n} rules that change the timing.`,
+    allTitle: "First IEP Meeting: What to Expect and Your Rights as a Parent (NY, PA, IL)",
+    allDesc: "What happens at a first IEP meeting: who has to be there, what you can ask for before the meeting, why you don't have to sign at the table, and the New York, Pennsylvania and Illinois rules.",
+    body: firstMeetingBody,
+  },
 ];
 const guideStateSlug = (code) => STATES[code].slug.replace("-iep-timeline-calculator", "");
 
@@ -416,6 +425,54 @@ ${list
 <p><strong>Already signed consent?</strong> The clock is running. ${code ? `<a href="/${STATES[code].slug}/">See the exact date each step is due in ${n}</a>, with the rule behind it.` : `Pick your state to see the exact date each step is due, with the rule behind it: ${calcLinks()}.`}</p>
 </div>
 <p class="small">General information, not legal advice. Rules checked against the regulation text in November 2026.</p>
+`;
+}
+
+const FIRST_MEETING_STATE = {
+  NY: `<p>In New York the team is called the <strong>Committee on Special Education (CSE)</strong>, and it includes a school psychologist. You can also ask for an <strong>additional parent member</strong>, a parent of another child with a disability, to join. Put the request in writing at least 72 hours before the meeting (<a href="https://www.law.cornell.edu/regulations/new-york/8-NYCRR-200.3">8 NYCRR §200.3(a)(1)(viii)</a>).</p>`,
+  PA: `<p>In Pennsylvania you should get the <strong>Evaluation Report</strong> at least 10 school days before the meeting, so you have time to read it (<a href="https://www.law.cornell.edu/regulations/pennsylvania/22-Pa-Code-SS-14-123">22 Pa. Code §14.123(d)</a>). The IEP meeting has to happen within 30 calendar days of the report. After the meeting, the school sends a <strong>NOREP</strong> (Notice of Recommended Educational Placement). That's the form where you agree or disagree, and you can take it home before you sign.</p>`,
+  IL: `<p>In Illinois the school has to give you notice of the meeting at least 10 days ahead (you can waive that in writing), and send you copies of the written materials the team will consider, such as evaluations and data, at least 3 school days before the meeting (<a href="https://www.law.cornell.edu/regulations/illinois/Ill-Admin-Code-tit-23-SS-226.530">23 Ill. Adm. Code §226.530</a>; 105 ILCS 5/14-8.02f(c)). In Illinois the first IEP meeting falls inside the same 60-school-day window as the evaluation.</p>`,
+};
+
+function firstMeetingBody(code, switcher) {
+  const list = code ? [code] : codes;
+  const n = code && STATES[code].name;
+  return `
+<p class="eyebrow">Guide · ${code ? n : "New York, Pennsylvania, Illinois"}</p>
+<h1>${code ? `Your first IEP meeting in ${n}: what happens and what you can ask for` : "Your first IEP meeting: what happens and what you can ask for"}</h1>
+${switcher}
+<p class="lead">The evaluation is done and the school wants to meet. A lot of parents walk into that first meeting not knowing who will be there, what will be decided, or whether they're supposed to sign something on the spot. Here's what to expect, and what you're allowed to ask for.</p>
+
+<h2>Who will be at the table</h2>
+<p>Federal law says the team has to include you, at least one of your child's general education teachers, a special education teacher, someone from the district who can commit resources, and someone who can explain what the evaluation results mean. Your child can attend when it makes sense (<a href="https://www.law.cornell.edu/cfr/text/34/300.321">34 CFR §300.321</a>).</p>
+<p>You can bring people too: a partner, a friend, an advocate, or a therapist who knows your child (§300.321(a)(6)). If a required team member wants to skip the meeting, they need your agreement in writing (§300.321(e)).</p>
+
+<h2>Before the meeting: what you can ask for</h2>
+<ul>
+<li><strong>A time that works for you.</strong> The meeting has to be at a mutually agreed time and place, and the notice has to say who's coming and why (<a href="https://www.law.cornell.edu/cfr/text/34/300.322">34 CFR §300.322(a), (b)</a>).</li>
+<li><strong>A phone or video option</strong> if you can't be there in person (§300.322(c); §300.328).</li>
+<li><strong>An interpreter</strong> if English isn't your first language or you're deaf. The school arranges it (§300.322(e)).</li>
+<li><strong>Your child's records.</strong> The school has to let you see them before any IEP meeting (<a href="https://www.law.cornell.edu/cfr/text/34/300.613">34 CFR §300.613</a>). Asking for the evaluation report ahead of time is the single most useful thing you can do.</li>
+</ul>
+
+<h2>The rules in ${code ? n : "your state"}</h2>
+${list.map((c) => (code ? "" : `<h3>${STATES[c].name}</h3>`) + FIRST_MEETING_STATE[c]).join("\n")}
+
+<h2>At the meeting</h2>
+<p>The team goes over the evaluation, decides whether your child is eligible, and, if so, writes the IEP: goals, services, how many minutes and where, and accommodations. You're a full member of the team, and the team has to consider your concerns.</p>
+<p><strong>You don't have to sign at the table.</strong> Before the school can start special education services for the first time, it needs your written consent (<a href="https://www.law.cornell.edu/cfr/text/34/300.300">34 CFR §300.300(b)</a>). It's fine to say you'd like to take the IEP home and read it first. You can also agree to services while writing down the parts you disagree with.</p>
+
+<h2>After the meeting</h2>
+<ul>
+<li><strong>Get your copy.</strong> The school has to give you a copy of the IEP at no cost (§300.322(f)).</li>
+<li><strong>Write a short summary email.</strong> What was agreed, who will do what, and by when. If something was promised out loud but isn't in the IEP, this is how it gets on the record.</li>
+<li><strong>Put the next dates on your calendar.</strong> The IEP is reviewed at least once a year, and your child is reevaluated at least every three years. ${calcLinks()} will work out those dates.</li>
+</ul>
+
+<div class="not-alone">
+<p><strong>Want help getting ready?</strong> The <a href="/letter-pack/">letter pack</a> includes IEP meeting prep (what to bring, questions to ask, and calm words for when the meeting moves fast) plus a summary email to send afterwards.</p>
+</div>
+<p class="small">General information based on the published rules, not legal advice. Last checked November 8, 2026.</p>
 `;
 }
 
