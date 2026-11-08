@@ -749,7 +749,7 @@ function privacyPage() {
 <h2>The calculator</h2>
 <p>Everything you type into the calculator, including dates and school calendars, is processed in your own browser. It is not sent to or stored on our servers.</p>
 <h2>Hosting and fonts</h2>
-<p>The site is hosted on Vercel, which keeps standard server logs (such as IP address and pages requested) for security and operations. Fonts are loaded from Google Fonts, which receives your IP address when the page loads.</p>
+<p>The site is hosted on Cloudflare (Cloudflare Pages), which keeps standard server logs (such as IP address and pages requested) for security and operations. Fonts are loaded from Google Fonts, which receives your IP address when the page loads.</p>
 <h2>Purchases</h2>
 <p>If you buy a product, Lemon Squeezy collects your name, email and payment details to process the order and send your download. We receive your name, email and order details so we can provide support and refunds. We do not receive your full card number. See the <a href="https://www.lemonsqueezy.com/privacy">Lemon Squeezy privacy policy</a>.</p>
 <h2>Email list</h2>
