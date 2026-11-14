@@ -83,6 +83,7 @@ function statePage(code, s) {
 <form id="calc-form" class="card" autocomplete="off">
   <label for="consent">When did the school receive your signed consent form?<span class="hint">Not sure? Use the day you handed it in or emailed it. For school-age children (kindergarten through age 21). Preschool (ages 3–5) and Early Intervention (under 3) follow different timelines.</span></label>
   <input type="date" id="consent" required>
+  ${s.hasReferralDate ? `<label for="referral">When did the school get the referral (your first written request for an assessment)? <span class="hint">optional. Only matters near the end of the school year: if the referral came 30 days or fewer before the last day, a different deadline applies.</span></label><input type="date" id="referral">` : ""}
   ${s.hasIntellectualDisability ? `<label class="check"><input type="checkbox" id="id-box"> My child has an intellectual disability (reevaluated every 2 years)</label>` : ""}
   <details>
     <summary>Adjust the school calendar (recommended)</summary>
@@ -237,7 +238,7 @@ function homePage() {
   const body = `
 <h1>When does the school have to act?</h1>
 <section class="hero">
-<p class="hero-text">Asked the school to evaluate your child and now you're waiting? The law gives the school deadlines. Pick your state, enter the day the school got your signed consent, and see exactly when each step has to happen, with the rule behind every date. Free, no sign-up, and nothing you type leaves your browser.</p>
+<p class="hero-text">Asked the school to evaluate your child and now you're waiting? The law gives the school deadlines. Pick your state, enter the day the school got your signed consent, and see exactly when each step has to happen, with the rule behind every date. Free, no sign-up, and the dates you enter are calculated right in your browser.</p>
 </section>
 <div class="states">
 ${Object.values(STATES)
@@ -282,7 +283,7 @@ function aboutPage() {
 <h2>Limits</h2>
 <p>Results are estimates. They are only as accurate as the school calendar you enter, and they do not cover every exception in the regulations (for example, a student who changes districts during an evaluation). This is not legal advice. Confirm deadlines with your district, your state's parent training center, or an advocate.</p>
 <h2>Privacy</h2>
-<p>Everything is calculated in your browser. Nothing you enter is sent to or stored on a server.</p>
+<p>The calculator runs in your browser. The dates and calendar you enter are not sent to our servers. If you choose to get an email reminder, your email, state and that one date go to our email provider. See the <a href="/privacy/">privacy policy</a>.</p>
 `;
   return layout({
     title: "About the IEP Timeline Calculator – Method, Sources and Limits",
@@ -389,7 +390,7 @@ function signupBox() {
 <button type="submit">Send me the checklist</button>
 </form>
 <p class="signup-done" hidden>Thanks! Here's your checklist: <a href="/checklist/">open it now</a>. A copy is on its way to your inbox.</p>
-<p class="small">We only use your email for this. See our <a href="/privacy/">privacy policy</a>.</p>
+<p class="small">We use your email to send the checklist and an occasional note about new states or guides. Unsubscribe anytime. See our <a href="/privacy/">privacy policy</a>.</p>
 </section>
 <script src="/signup.js" defer></script>`;
 }
@@ -583,7 +584,7 @@ function letterPackPage() {
 </div>
 
 <h2>Why each letter says it the way it does</h2>
-<p>Every letter is polite on purpose. It names the date and the regulation, asks one clear question, and leaves room for the school to fix it, which makes it easy for them to answer. Under each letter you'll see a one-line note on why it's safe to send.</p>
+<p>Every letter is polite on purpose. It names the date and the regulation, asks one clear question, and leaves room for the school to fix it, which makes it easy for them to answer. Under each letter you'll see a one-line note on why it's worded the way it is.</p>
 
 <h2>Questions</h2>
 <details><summary>What's free and what's paid?</summary><p>The calculator, every date and rule, and the first half of each letter are free. The ${PAYWALL.price} unlocks the full letters, one-click sending, the meeting prep and the glossary.</p></details>
@@ -718,7 +719,7 @@ function checklistPage() {
 
 // Contact address shown on the legal pages. Empty = point buyers to their receipt email.
 const CONTACT_EMAIL = process.env.CONTACT_EMAIL || "iepdeadlines@gmail.com";
-const UPDATED = "November 4, 2026";
+const UPDATED = "November 14, 2026";
 function contactLine() {
   return CONTACT_EMAIL
     ? `Email <a href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a>.`
@@ -747,19 +748,27 @@ function termsPage() {
 function privacyPage() {
   return legalPage("privacy", "Privacy Policy", "What the IEP Timeline Calculator collects (almost nothing) and how purchases are handled.", `
 <h2>The calculator</h2>
-<p>Everything you type into the calculator, including dates and school calendars, is processed in your own browser. It is not sent to or stored on our servers.</p>
+<p>Everything you type into the calculator, including dates and school calendars, is processed in your own browser. It is not sent to or stored on our servers. The only exceptions are the optional email forms and the meeting practice tool described below.</p>
+<h2>What your browser stores</h2>
+<p>This site saves a few things in your own browser (localStorage): whether you unlocked the letter pack, the last calculator page you used, and the dates you entered so you don't have to type them again. They stay on your device. You can clear them in your browser settings.</p>
 <h2>Hosting and fonts</h2>
 <p>The site is hosted on Cloudflare (Cloudflare Pages), which keeps standard server logs (such as IP address and pages requested) for security and operations. Fonts are loaded from Google Fonts, which receives your IP address when the page loads.</p>
 <h2>Purchases</h2>
-<p>If you buy a product, Lemon Squeezy collects your name, email and payment details to process the order and send your download. We receive your name, email and order details so we can provide support and refunds. We do not receive your full card number. See the <a href="https://www.lemonsqueezy.com/privacy">Lemon Squeezy privacy policy</a>.</p>
+<p>If you buy a product, Lemon Squeezy collects your name, email and payment details to process the order and send your download. We receive your name, email and order details so we can provide support and refunds. We do not receive your full card number. When you unlock the letter pack, your license key is sent to Lemon Squeezy to check that it's valid. See the <a href="https://www.lemonsqueezy.com/privacy">Lemon Squeezy privacy policy</a>.</p>
 <h2>Email list</h2>
 <p>If you sign up for the free checklist, your email address is stored by our email provider, MailerLite, so we can send it to you and, now and then, tell you about new guides and states. If you ask for a deadline reminder, MailerLite stores your email, your state, and the one date and step you picked, so we can send two emails about that date (3 days before and the day after). Every email has an unsubscribe link. See the <a href="https://www.mailerlite.com/legal/privacy-policy">MailerLite privacy policy</a>.</p>
 <h2>Meeting practice</h2>
 <p>On the <a href="/iep-meeting-practice/">meeting practice</a> page, what you type, plus the state and situation you picked, is sent to Anthropic, the company that makes the Claude AI, so it can write the school's reply and your tip. We don't save the conversation; it stays in your browser tab until you close it. Anthropic may keep API data for a limited time under its own policy and does not use it to train its models by default. See the <a href="https://www.anthropic.com/legal/privacy">Anthropic privacy policy</a>. Please don't type your child's name or other details that could identify them.</p>
 <h2>What we do not do</h2>
 <p>We do not sell personal information, and we do not ask for information about your child's disability or records.</p>
-<h2>Your choices</h2>
-<p>You can ask us to delete the order information we hold about you. ${contactLine()}</p>`);
+<h2>Children</h2>
+<p>This site is for parents and school staff. It is not meant for children under 13, and we don't knowingly collect their information.</p>
+<h2>Do Not Track</h2>
+<p>Our site does not track you across other websites, and we do not use advertising cookies. We don't change how the site works based on a Do Not Track signal, because there is no cross-site tracking to turn off.</p>
+<h2>Seeing, correcting or deleting your information</h2>
+<p>You can ask us to see, correct or delete the information we hold about you, including order details and your email list record. ${contactLine()} You can also unsubscribe from any email with the link at the bottom.</p>
+<h2>Changes to this policy</h2>
+<p>If we change this policy, we'll update the date at the top. If a change affects how we use information you already gave us, we'll email you first.</p>`);
 }
 
 function refundsPage() {

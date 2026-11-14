@@ -108,6 +108,7 @@ module.exports = {
   CA: {
     name: "California",
     slug: "california-iep-timeline-calculator",
+    hasReferralDate: true,
     lastChecked: "2026-11-08",
     years: [
       { first: "2026-08-12", last: "2027-06-09" },
@@ -136,7 +137,7 @@ module.exports = {
       ["Assessment plan sent to you", "15 calendar days after the referral (breaks longer than 5 school days don't count)", "Cal. Educ. Code §56043(a), §56321(a)"],
       ["Time for you to consider the plan", "At least 15 calendar days", "Cal. Educ. Code §56043(b)"],
       ["Assessment done and IEP meeting held", "60 calendar days after consent, not counting summer or breaks longer than 5 school days", "Cal. Educ. Code §56043(c), §56344(a)"],
-      ["Consent 30 days or fewer before the school year ends", "Within 30 days after the next school year starts", "Cal. Educ. Code §56344(a)"],
+      ["Referral 30 days or fewer before the school year ends", "Within 30 days after the next school year starts", "Cal. Educ. Code §56344(a)"],
       ["Your child's records", "Within 5 business days of your request, and before any IEP meeting", "Cal. Educ. Code §56043(n), §56504"],
       ["IEP meeting you ask for in writing", "Within 30 days (breaks longer than 5 school days don't count)", "Cal. Educ. Code §56043(l), §56343.5"],
       ["Reevaluation", "At least every 3 years", "Cal. Educ. Code §56043(k)"],

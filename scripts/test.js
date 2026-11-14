@@ -112,7 +112,10 @@ const CAc = require("../src/states.js").CA;
 const caRun = (c) => C.compute("CA", { consent: c, years: CAc.years, closures: CAc.closures }).find((r) => r.key === "iep").date;
 eq(caRun("2026-10-01"), "2026-11-30", "CA 60 days, 5-day Thanksgiving week still counts");
 eq(caRun("2026-12-01"), "2027-02-22", "CA winter break over 5 school days is skipped");
-eq(caRun("2027-05-20"), "2027-09-10", "CA consent within 30 days of year end: 30 days into next year");
+const caRunR = (c, r) => C.compute("CA", { consent: c, referral: r, years: CAc.years, closures: CAc.closures }).find((r) => r.key === "iep").date;
+eq(caRunR("2027-05-20", "2027-05-15"), "2027-09-10", "CA referral within 30 days of year end: 30 days into next year");
+eq(caRunR("2027-05-20", "2027-04-26"), caRun("2027-05-20"), "CA referral 45 days before year end, consent 20 days before: normal 60-day rule (Sec. 56344(a) keys on referral)");
+eq(caRun("2027-05-20") !== "2027-09-10", true, "CA no referral date: 30-day rule not applied from consent");
 
 // IEP meeting practice: request checks and output cleaning (no API calls)
 const PD = require("../src/practice-data.js");

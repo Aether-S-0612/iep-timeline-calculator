@@ -244,12 +244,13 @@
     CA: function (input, cal) {
       const c = input.consent;
       const rows = [];
-      const last = currentLastDay(cal, c);
+      const r = input.referral;
+      const last = r ? currentLastDay(cal, r) : null;
       let due, basis;
-      if (last && daysBetweenISO(c, last) <= 30) {
-        const nf = nextFirstDay(cal, c);
+      if (r && last && r <= last && daysBetweenISO(r, last) <= 30) {
+        const nf = nextFirstDay(cal, r);
         due = nf ? addDays(nf, 30) : null;
-        basis = "Consent came 30 days or fewer before the end of the school year, so the meeting must be held within 30 days after the next school year starts";
+        basis = "The school got the referral 30 days or fewer before the end of the school year, so the meeting must be held within 30 days after the next school year starts";
       } else {
         due = addCalendarDaysSkippingLongBreaks(cal, c, 60);
         basis = "60 calendar days after the school receives written consent, not counting summer or school breaks longer than 5 school days";
@@ -261,7 +262,8 @@
         basis,
         cite: "Cal. Educ. Code §56043(c), §56344(a)",
         citeUrl: "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=EDC&sectionNum=56344",
-        note: "Services start as soon as possible after you consent to the IEP (§56043(i)).",
+        note: (r ? "" : "If the school got the referral 30 days or fewer before the last day of the school year, the IEP is due within 30 days after the next school year starts instead (§56344(a)). Add the referral date above to check. ") +
+          "Services start as soon as possible after you consent to the IEP (§56043(i)).",
       });
       return finishRows(rows, input, due, {
         annualCite: "Cal. Educ. Code §56043(d)",

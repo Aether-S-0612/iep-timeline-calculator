@@ -62,6 +62,7 @@
     return {
       consent: $("consent").value,
       iepDate: $("iep-date").value || null,
+      referral: $("referral") ? $("referral").value || null : null,
       intellectualDisability: $("id-box") ? $("id-box").checked : false,
       years: [
         { first: $("y1-first").value, last: $("y1-last").value },
