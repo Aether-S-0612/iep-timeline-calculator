@@ -186,8 +186,8 @@
   const params = new URLSearchParams(location.search);
   const letterOn = !!window.IEPLetter && $("letter") && (pay.live || params.has("preview"));
   function unlocked() {
-    // ?preview=full only works on local and preview hosts, never on the live domain.
-    const devHost = /^(localhost|127\.0\.0\.1)$/.test(location.hostname) || /\.pages\.dev$/.test(location.hostname);
+    // ?preview=full only works locally and on branch previews (x.iepdeadlines.pages.dev), never on live hosts.
+    const devHost = /^(localhost|127\.0\.0\.1)$/.test(location.hostname) || /\.iepdeadlines\.pages\.dev$/.test(location.hostname);
     if (devHost && params.get("preview") === "full") return true;
     try { return localStorage.getItem("iep-letter-unlocked") === "1"; } catch (e) { return false; }
   }
