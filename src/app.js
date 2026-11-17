@@ -186,7 +186,9 @@
   const params = new URLSearchParams(location.search);
   const letterOn = !!window.IEPLetter && $("letter") && (pay.live || params.has("preview"));
   function unlocked() {
-    if (params.get("preview") === "full") return true;
+    // ?preview=full only works on local and preview hosts, never on the live domain.
+    const devHost = /^(localhost|127\.0\.0\.1)$/.test(location.hostname) || /\.pages\.dev$/.test(location.hostname);
+    if (devHost && params.get("preview") === "full") return true;
     try { return localStorage.getItem("iep-letter-unlocked") === "1"; } catch (e) { return false; }
   }
   const FAKE = "Please reply in writing within five school days and tell me the date this will be completed, the reason for the delay, and who is responsible. ";
