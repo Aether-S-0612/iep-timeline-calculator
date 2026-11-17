@@ -5,10 +5,10 @@ const path = require("path");
 const ROOT = path.join(__dirname, "..");
 const OUT = path.join(ROOT, "public");
 // Paid letter. live=false hides it unless the URL has ?preview. checkoutUrl is the payment link.
-// checkoutLive=false: the buy button only works with ?preview in the URL (Gumroad product not live yet).
+// checkoutLive=true: the buy button works for everyone. Set false to hide checkout again (then only ?preview shows it).
 const PAYWALL = {
   live: true,
-  checkoutLive: false,
+  checkoutLive: true,
   price: "$12",
   checkoutUrl: process.env.CHECKOUT_URL || "https://iepkeeper.gumroad.com/l/ewxvpq",
 };
