@@ -736,6 +736,8 @@ function legalPage(slug, title, description, inner) {
 
 function termsPage() {
   return legalPage("terms", "Terms of Service", "Terms for using the free IEP Timeline Calculator and buying its printable templates.", `
+<h2>Who we are</h2>
+<p>This site is run by an independent developer based in Taiwan.</p>
 <h2>The free calculator</h2>
 <p>The calculator is free to use. It gives estimates based on published regulations and the school calendar you enter. It is general information, not legal advice, and using it does not create an attorney-client or advocate relationship. Always confirm deadlines with your school district, your state education agency, or a qualified advocate.</p>
 <h2>Paid products</h2>
@@ -743,7 +745,11 @@ function termsPage() {
 <p>After purchase you may use the templates for yourself and your own family. Please do not resell or redistribute them.</p>
 <h2>No guarantee of outcome</h2>
 <p>Templates help you communicate clearly with your school. We cannot promise any particular response or result from a school or agency.</p>
-<h2>Changes</h2>
+<h2>No warranty and limits</h2>
+<p>The calculator, guides and templates are provided "as is." To the extent the law allows, we are not liable for any indirect or consequential loss, and our total liability for any claim is limited to the amount you paid us.</p>
+${PRACTICE_LIVE ? `<h2>Meeting practice</h2>
+<p>The practice tool uses AI. It can be wrong or say things a real school would not. Use it to rehearse, not as advice. It is for adults 18 and older.</p>
+` : ""}<h2>Changes</h2>
 <p>We may update the calculator, products and these terms. The date at the top shows the latest version.</p>
 <h2>Contact</h2>
 <p>${contactLine()}</p>`);
