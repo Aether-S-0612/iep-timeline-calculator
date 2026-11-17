@@ -5,12 +5,12 @@ const path = require("path");
 const ROOT = path.join(__dirname, "..");
 const OUT = path.join(ROOT, "public");
 // Paid letter. live=false hides it unless the URL has ?preview. checkoutUrl is the payment link.
-// checkoutLive=false: the buy button only works with ?preview in the URL (store is still in test mode).
+// checkoutLive=false: the buy button only works with ?preview in the URL (Gumroad product not live yet).
 const PAYWALL = {
   live: true,
   checkoutLive: false,
   price: "$12",
-  checkoutUrl: process.env.CHECKOUT_URL || "https://iepdeadlines.lemonsqueezy.com/checkout/buy/5521c769-2346-4182-a823-802108757d06",
+  checkoutUrl: process.env.CHECKOUT_URL || "https://iepkeeper.gumroad.com/l/ewxvpq",
 };
 const SITE = (process.env.SITE_URL || "https://www.iepdeadlines.com").replace(/\/$/, "");
 const SITE_NAME = "IEP Timeline Calculator";
@@ -719,7 +719,7 @@ function checklistPage() {
 
 // Contact address shown on the legal pages. Empty = point buyers to their receipt email.
 const CONTACT_EMAIL = process.env.CONTACT_EMAIL || "iepdeadlines@gmail.com";
-const UPDATED = "November 14, 2026";
+const UPDATED = "November 17, 2026";
 function contactLine() {
   return CONTACT_EMAIL
     ? `Email <a href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a>.`
@@ -735,7 +735,7 @@ function termsPage() {
 <h2>The free calculator</h2>
 <p>The calculator is free to use. It gives estimates based on published regulations and the school calendar you enter. It is general information, not legal advice, and using it does not create an attorney-client or advocate relationship. Always confirm deadlines with your school district, your state education agency, or a qualified advocate.</p>
 <h2>Paid products</h2>
-<p>Paid products are digital downloads, such as printable letter templates and checklists. Orders are processed by our online reseller, Lemon Squeezy, which is the merchant of record and handles payment, sales tax and receipts. Their <a href="https://www.lemonsqueezy.com/buyer-terms">buyer terms</a> also apply to your purchase.</p>
+<p>Paid products are digital downloads, such as printable letter templates and checklists. Orders are processed by Gumroad, which is the merchant of record and handles payment, sales tax and receipts. Their <a href="https://gumroad.com/terms">terms</a> also apply to your purchase.</p>
 <p>After purchase you may use the templates for yourself and your own family. Please do not resell or redistribute them.</p>
 <h2>No guarantee of outcome</h2>
 <p>Templates help you communicate clearly with your school. We cannot promise any particular response or result from a school or agency.</p>
@@ -754,7 +754,7 @@ function privacyPage() {
 <h2>Hosting and fonts</h2>
 <p>The site is hosted on Cloudflare (Cloudflare Pages), which keeps standard server logs (such as IP address and pages requested) for security and operations. Fonts are loaded from Google Fonts, which receives your IP address when the page loads.</p>
 <h2>Purchases</h2>
-<p>If you buy a product, Lemon Squeezy collects your name, email and payment details to process the order and send your download. We receive your name, email and order details so we can provide support and refunds. We do not receive your full card number. When you unlock the letter pack, your license key is sent to Lemon Squeezy to check that it's valid. See the <a href="https://www.lemonsqueezy.com/privacy">Lemon Squeezy privacy policy</a>.</p>
+<p>If you buy a product, Gumroad collects your name, email and payment details to process the order and send your download. We receive your name, email and order details so we can provide support and refunds. We do not receive your full card number. When you unlock the letter pack, your license key is sent to Gumroad to check that it's valid. See the <a href="https://gumroad.com/privacy">Gumroad privacy policy</a>.</p>
 <h2>Email list</h2>
 <p>If you sign up for the free checklist, your email address is stored by our email provider, MailerLite, so we can send it to you and, now and then, tell you about new guides and states. If you ask for a deadline reminder, MailerLite stores your email, your state, and the one date and step you picked, so we can send two emails about that date (3 days before and the day after). Every email has an unsubscribe link. See the <a href="https://www.mailerlite.com/legal/privacy-policy">MailerLite privacy policy</a>.</p>
 <h2>Meeting practice</h2>
@@ -775,7 +775,7 @@ function refundsPage() {
   return legalPage("refunds", "Refund Policy", "Refund policy for the follow-up letter and IEP meeting prep sold on the IEP Timeline Calculator.", `
 <p>If the letter and meeting prep are not useful to you, ask for a refund within 14 days of purchase and you will get your money back in full. No explanation is needed. Refunds are limited to one per customer.</p>
 <p>When a refund is issued, the license key for that purchase stops working.</p>
-<p>Refunds go back to your original payment method through Lemon Squeezy. Depending on your bank, they usually appear within 5 to 10 business days.</p>
+<p>Refunds go back to your original payment method through Gumroad. Depending on your bank, they usually appear within 5 to 10 business days.</p>
 <p>If you think a date we calculated is wrong, please tell us what you entered (state, consent date and school calendar). We check every report, whether or not you ask for a refund.</p>
 <h2>How to ask</h2>
 <p>${contactLine()} Include the email address you used to buy.</p>`);
@@ -791,7 +791,7 @@ function unlockPage() {
   <div class="actions"><button type="submit">Unlock my letter</button></div>
   <p class="small key-msg" role="status"></p>
 </form>
-<p class="small">Can't find the email? Check spam for a message from Lemon Squeezy, or write to ${CONTACT_EMAIL || "us"}.</p>
+<p class="small">Can't find the email? Check spam for a message from Gumroad, or write to ${CONTACT_EMAIL || "us"}.</p>
 <script src="/app.js"></script>
 `;
   return layout({ title: "Unlock your letter – " + SITE_NAME, description: "Enter your license key to unlock your follow-up letter and IEP meeting prep.", canonical: "/unlock/", body, head: '<meta name="robots" content="noindex">' });

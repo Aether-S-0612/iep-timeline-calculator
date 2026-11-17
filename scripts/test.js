@@ -137,4 +137,21 @@ for (const [id, sc] of Object.entries(PD.SCENARIOS)) for (const f of sc.facts) e
 eq(PC.buildParams(PC.parseRequest(okReq)).model, "claude-haiku-5-5", "practice default model");
 eq("temperature" in PC.buildParams(PC.parseRequest(okReq)), false, "practice no sampling params");
 
-console.log("All", n, "checks passed");
+// License check (Gumroad), with a fake fetch.
+const UC = require("../lib/unlock-core.js");
+const fake = (status, data) => async (url, opts) => { fake.last = { url, body: opts.body }; return { status, json: async () => data }; };
+(async () => {
+  let o = await UC.checkLicense({ key: "AAAA1111-BBBB2222-CCCC3333-DDDD4444" }, "pid123", fake(200, { success: true, purchase: { refunded: false } }));
+  eq(o.body.ok, true, "gumroad valid key unlocks");
+  eq(/product_id=pid123/.test(fake.last.body) && /increment_uses_count=false/.test(fake.last.body), true, "gumroad sends product_id, no use count");
+  o = await UC.checkLicense({ key: "AAAA1111-BBBB2222-CCCC3333-DDDD4444" }, "pid123", fake(200, { success: true, purchase: { refunded: true } }));
+  eq(o.body.ok, false, "gumroad refunded key stays locked");
+  o = await UC.checkLicense({ key: "AAAA1111-BBBB2222-CCCC3333-DDDD4444" }, "pid123", fake(404, { success: false, message: "not found" }));
+  eq(o.body.ok, false, "gumroad unknown key stays locked");
+  o = await UC.checkLicense({ key: "AAAA1111-BBBB2222-CCCC3333-DDDD4444" }, "pid123", fake(500, null));
+  eq(o.status, 502, "gumroad outage reported as 502");
+  o = await UC.checkLicense({ key: "bad key!" }, "pid123", fake(200, {}));
+  eq(o.status, 400, "malformed key rejected before calling gumroad");
+  console.log("All", n, "checks passed (incl. license)");
+})();
+
