@@ -4,6 +4,10 @@ const path = require("path");
 
 const ROOT = path.join(__dirname, "..");
 const OUT = path.join(ROOT, "public");
+// Cache-busting version for our scripts: changes whenever any file in src/ changes.
+const ASSET_V = require("crypto").createHash("sha1")
+  .update(fs.readdirSync(path.join(ROOT, "src")).sort().map((f) => fs.readFileSync(path.join(ROOT, "src", f))).join("\n"))
+  .digest("hex").slice(0, 8);
 // Paid letter. live=false hides it unless the URL has ?preview. checkoutUrl is the payment link.
 // checkoutLive=true: the buy button works for everyone. Set false to hide checkout again (then only ?preview shows it).
 const PAYWALL = {
@@ -36,7 +40,6 @@ function layout({ title, description, canonical, body, head = "" }) {
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/style.css">
 ${head}
-<script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
 <header class="site"><div class="wrap">
@@ -221,9 +224,9 @@ ${s.faq.map(([q, a]) => `<h3>${esc(q)}</h3><p>${esc(a)}</p>`).join("\n")}
 
 <script>window.STATE_CONFIG = ${JSON.stringify(cfg)};</script>
 <script>window.PAYWALL = ${JSON.stringify(PAYWALL)};</script>
-<script src="/calc.js"></script>
-<script src="/letter.js"></script>
-<script src="/app.js"></script>
+<script src="/calc.js?v=${ASSET_V}"></script>
+<script src="/letter.js?v=${ASSET_V}"></script>
+<script src="/app.js?v=${ASSET_V}"></script>
 `;
   return layout({
     title,
@@ -392,7 +395,7 @@ function signupBox() {
 <p class="signup-done" hidden>Thanks! Here's your checklist: <a href="/checklist/">open it now</a>. A copy is on its way to your inbox.</p>
 <p class="small">We use your email to send the checklist and an occasional note about new states or guides. Unsubscribe anytime. See our <a href="/privacy/">privacy policy</a>.</p>
 </section>
-<script src="/signup.js" defer></script>`;
+<script src="/signup.js?v=${ASSET_V}" defer></script>`;
 }
 
 function guidePage(g, code) {
@@ -659,7 +662,7 @@ function suspendPage() {
 ${faq.map(([q, a]) => `<details><summary>${q}</summary><p>${a}</p></details>`).join("\n")}
 <p class="small">Estimates based on the published rules, not legal advice. Last checked November 8, 2026.</p>
 <script>window.SUSPEND_CFG=${cfgJson};</script>
-<script src="/calc.js"></script><script src="/suspend.js"></script><script src="/suspend-ui.js"></script>
+<script src="/calc.js?v=${ASSET_V}"></script><script src="/suspend.js?v=${ASSET_V}"></script><script src="/suspend-ui.js?v=${ASSET_V}"></script>
 `;
   return layout({
     title: "IEP Suspension Calculator: The 10-Day Rule for Students With Disabilities (CA, NY, PA, IL)",
@@ -793,7 +796,7 @@ function unlockPage() {
   <p class="small key-msg" role="status"></p>
 </form>
 <p class="small">Can't find the email? Check spam for a message from Gumroad, or write to ${CONTACT_EMAIL || "us"}.</p>
-<script src="/app.js"></script>
+<script src="/app.js?v=${ASSET_V}"></script>
 `;
   return layout({ title: "Unlock your letter – " + SITE_NAME, description: "Enter your license key to unlock your follow-up letter and IEP meeting prep.", canonical: "/unlock/", body, head: '<meta name="robots" content="noindex">' });
 }
@@ -859,7 +862,7 @@ ${cards}
 <li>Your state's free ${ext("https://www.parentcenterhub.org/find-your-center/", "Parent Center")} can help you get ready.</li>
 </ul>
 <p class="small">General information, not legal advice. Last checked November 8, 2026.</p>
-<script src="/practice-data.js"></script><script src="/practice.js"></script>
+<script src="/practice-data.js?v=${ASSET_V}"></script><script src="/practice.js?v=${ASSET_V}"></script>
 `;
   return layout({
     title: "IEP Meeting Practice: Rehearse What to Say When the School Pushes Back",
