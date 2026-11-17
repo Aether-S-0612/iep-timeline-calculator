@@ -591,6 +591,7 @@ function letterPackPage() {
 <details><summary>Which states does it cover?</summary><p>California, New York, Pennsylvania and Illinois, for school-age children (not Early Intervention or preschool).</p></details>
 <details><summary>Is this legal advice?</summary><p>No. It's general information and letter templates based on the published rules. For advice about your child's situation, your state's free Parent Center is a great place to start.</p></details>
 <details><summary>Is it a subscription?</summary><p>No. One payment, and the pack stays unlocked in your browser. Your license key in the receipt email unlocks it on another device.</p></details>
+<details><summary>Who processes the payment?</summary><p>Payment is handled by Gumroad. Your receipt and card statement will show Gumroad.</p></details>
 <details><summary>What if it doesn't help?</summary><p>Ask within 14 days for a full refund, no explanation needed. See the <a href="/refunds/">refund policy</a>.</p></details>
 
 <div class="not-alone">
